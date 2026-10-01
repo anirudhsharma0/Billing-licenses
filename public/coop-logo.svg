@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 280" width="100%" height="100%">
+  <defs>
+    <!-- Sky / Sun / Green Background Gradient inside Cogwheel -->
+    <linearGradient id="innerBg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f97316" />
+      <stop offset="25%" stop-color="#fbbf24" />
+      <stop offset="50%" stop-color="#fef08a" />
+      <stop offset="68%" stop-color="#22c55e" />
+      <stop offset="90%" stop-color="#15803d" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+
+    <!-- Leaf Definition for Reuse -->
+    <g id="leafPair">
+      <path d="M 0 0 C -8 -5 -14 -2 -18 4 C -12 7 -6 4 0 0 Z" fill="#16a34a" />
+      <path d="M 0 0 C -4 -8 -1 -14 5 -18 C 8 -12 5 -6 0 0 Z" fill="#22c55e" />
+    </g>
+  </defs>
+
+  <!-- ==================== 1. LAUREL WREATH (GREEN LEAVES) ==================== -->
+  <g id="wreath">
+    <!-- Crossed Stems at Bottom -->
+    <path d="M 85 242 Q 120 226 155 242" fill="none" stroke="#16a34a" stroke-width="2.5" stroke-linecap="round" />
+    <path d="M 88 245 L 152 235" fill="none" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" />
+
+    <!-- Left Main Curved Stem -->
+    <path d="M 120 230 C 50 220 18 165 18 115 C 18 65 60 25 112 18" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" />
+    <!-- Right Main Curved Stem -->
+    <path d="M 120 230 C 190 220 222 165 222 115 C 222 65 180 25 128 18" fill="none" stroke="#16a34a" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Left Leaves Array -->
+    <!-- Bottom leaves -->
+    <path d="M 108 228 C 96 238 78 242 70 235 C 76 226 92 222 108 228 Z" fill="#16a34a" />
+    <path d="M 92 223 C 78 230 62 232 54 223 C 62 216 78 214 92 223 Z" fill="#22c55e" />
+    <path d="M 75 212 C 58 218 44 216 38 205 C 48 200 64 202 75 212 Z" fill="#16a34a" />
+    <path d="M 60 197 C 44 200 30 195 26 182 C 37 179 50 184 60 197 Z" fill="#22c55e" />
+    <!-- Mid-lower leaves -->
+    <path d="M 46 178 C 30 178 18 170 16 156 C 27 155 40 163 46 178 Z" fill="#16a34a" />
+    <path d="M 35 156 C 20 152 10 142 10 128 C 22 129 32 139 35 156 Z" fill="#22c55e" />
+    <path d="M 28 132 C 14 125 6 112 8 98 C 20 101 28 114 28 132 Z" fill="#16a34a" />
+    <!-- Mid-upper leaves -->
+    <path d="M 25 108 C 13 98 8 83 13 70 C 24 75 30 89 25 108 Z" fill="#22c55e" />
+    <path d="M 27 84 C 18 72 16 57 24 45 C 33 52 36 67 27 84 Z" fill="#16a34a" />
+    <path d="M 36 62 C 30 48 32 34 43 24 C 49 34 49 49 36 62 Z" fill="#22c55e" />
+    <!-- Top leaves -->
+    <path d="M 52 44 C 48 30 54 18 68 11 C 71 22 68 36 52 44 Z" fill="#16a34a" />
+    <path d="M 72 30 C 72 16 82 7 97 4 C 96 16 90 28 72 30 Z" fill="#22c55e" />
+    <path d="M 96 21 C 100 8 112 3 124 4 C 120 16 112 25 96 21 Z" fill="#16a34a" />
+
+    <!-- Right Leaves Array -->
+    <!-- Bottom leaves -->
+    <path d="M 132 228 C 144 238 162 242 170 235 C 164 226 148 222 132 228 Z" fill="#16a34a" />
+    <path d="M 148 223 C 162 230 178 232 186 223 C 178 216 162 214 148 223 Z" fill="#22c55e" />
+    <path d="M 165 212 C 182 218 196 216 202 205 C 192 200 176 202 165 212 Z" fill="#16a34a" />
+    <path d="M 180 197 C 196 200 210 195 214 182 C 203 179 190 184 180 197 Z" fill="#22c55e" />
+    <!-- Mid-lower leaves -->
+    <path d="M 194 178 C 210 178 222 170 224 156 C 213 155 200 163 194 178 Z" fill="#16a34a" />
+    <path d="M 205 156 C 220 152 230 142 230 128 C 218 129 208 139 205 156 Z" fill="#22c55e" />
+    <path d="M 212 132 C 226 125 234 112 232 98 C 220 101 212 114 212 132 Z" fill="#16a34a" />
+    <!-- Mid-upper leaves -->
+    <path d="M 215 108 C 227 98 232 83 227 70 C 216 75 210 89 215 108 Z" fill="#22c55e" />
+    <path d="M 213 84 C 222 72 224 57 216 45 C 207 52 204 67 213 84 Z" fill="#16a34a" />
+    <path d="M 204 62 C 210 48 208 34 197 24 C 191 34 191 49 204 62 Z" fill="#22c55e" />
+    <!-- Top leaves -->
+    <path d="M 188 44 C 192 30 186 18 172 11 C 169 22 172 36 188 44 Z" fill="#16a34a" />
+    <path d="M 168 30 C 168 16 158 7 143 4 C 144 16 150 28 168 30 Z" fill="#22c55e" />
+    <path d="M 144 21 C 140 8 128 3 116 4 C 120 16 128 25 144 21 Z" fill="#16a34a" />
+  </g>
+
+  <!-- ==================== 2. COGWHEEL / GEAR WHEEL ==================== -->
+  <g id="cogwheel" transform="translate(120, 118)">
+    <!-- 36 Teeth of the Gear Wheel -->
+    <!-- Base Solid Ring -->
+    <circle cx="0" cy="0" r="76" fill="#1e1b4b" stroke="#0f172a" stroke-width="1.5" />
+
+    <!-- Gear Teeth around perimeter (Rotated systematically) -->
+    <!-- Repeat 36 teeth every 10 degrees -->
+    <g fill="#1e1b4b">
+      <!-- 0 to 90 deg -->
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(10)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(20)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(30)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(40)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(50)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(60)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(70)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(80)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(90)" />
+
+      <!-- 100 to 180 deg -->
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(100)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(110)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(120)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(130)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(140)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(150)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(160)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(170)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(180)" />
+
+      <!-- 190 to 270 deg -->
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(190)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(200)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(210)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(220)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(230)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(240)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(250)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(260)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(270)" />
+
+      <!-- 280 to 350 deg -->
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(280)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(290)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(300)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(310)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(320)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(330)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(340)" />
+      <rect x="-4.5" y="-84" width="9" height="10" rx="1.5" transform="rotate(350)" />
+    </g>
+
+    <!-- Inner Circle with Colorful Sky Gradient -->
+    <circle cx="0" cy="0" r="70" fill="url(#innerBg)" stroke="#0f172a" stroke-width="2.5" />
+  </g>
+
+  <!-- ==================== 3. CLASPED HANDSHAKE ==================== -->
+  <g id="handshake" transform="translate(120, 118)">
+    
+    <!-- LEFT CUFF (ANGLED FROM TOP-LEFT) -->
+    <g transform="rotate(-36, -50, -18)">
+      <rect x="-70" y="-32" width="22" height="38" rx="2" fill="#ffffff" stroke="#000000" stroke-width="3" />
+      <line x1="-54" y1="-32" x2="-54" y2="6" stroke="#000000" stroke-width="2" />
+    </g>
+
+    <!-- RIGHT CUFF (ANGLED FROM LOWER-RIGHT) -->
+    <g transform="rotate(40, 50, 18)">
+      <rect x="48" y="-6" width="22" height="38" rx="2" fill="#ffffff" stroke="#000000" stroke-width="3" />
+      <line x1="64" y1="-6" x2="64" y2="32" stroke="#000000" stroke-width="2" />
+    </g>
+
+    <!-- HANDS COMBINED PATH -->
+    <!-- Left Hand Palm & Wrist Body -->
+    <path d="M -56 -12 
+             C -45 -18 -30 -22 -12 -20
+             C 4 -18 16 -12 28 -2
+             C 24 6 12 12 -4 14
+             C -16 15 -28 10 -40 2
+             C -48 -2 -54 -8 -56 -12 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.5" stroke-linejoin="round" />
+
+    <!-- Left Thumb (Wrapping firmly over the top of the other hand) -->
+    <path d="M -30 -16
+             C -20 -28 -4 -32 14 -22
+             C 22 -17 20 -8 12 -4
+             C 2 -2 -14 0 -26 4 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.5" stroke-linejoin="round" />
+
+    <!-- Right Hand Wrapping Fingers (4 Clasping Fingers under the Left Hand) -->
+    <!-- Finger 1 (Index) -->
+    <path d="M -22 6
+             C -24 16 -18 25 -4 26
+             C 10 27 18 18 20 10
+             C 18 2 8 0 -4 4 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.2" stroke-linejoin="round" />
+    <path d="M -18 7 C -16 18 -10 23 2 24 C 12 24 16 18 18 11" fill="none" stroke="#000000" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Finger 2 (Middle) -->
+    <path d="M -12 14
+             C -12 25 -4 33 10 32
+             C 22 30 28 20 28 12
+             C 26 4 18 4 6 8 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.2" stroke-linejoin="round" />
+    <path d="M -8 15 C -6 24 2 29 14 28 C 22 26 26 18 26 12" fill="none" stroke="#000000" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Finger 3 (Ring) -->
+    <path d="M -2 22
+             C 0 31 10 37 22 34
+             C 32 31 36 21 34 13
+             C 32 7 24 8 14 12 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.2" stroke-linejoin="round" />
+    <path d="M 2 23 C 6 30 14 34 24 31 C 30 27 33 20 32 14" fill="none" stroke="#000000" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Finger 4 (Pinky) -->
+    <path d="M 8 28
+             C 12 36 22 40 32 35
+             C 39 31 42 22 38 15
+             C 35 11 28 13 18 18 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.2" stroke-linejoin="round" />
+    <path d="M 12 29 C 18 35 24 37 32 33 C 37 29 39 22 36 17" fill="none" stroke="#000000" stroke-width="2.8" stroke-linecap="round" />
+
+    <!-- Right Hand Back & Forearm going to Right Cuff -->
+    <path d="M 20 -2
+             C 34 4 44 14 54 22
+             C 50 28 42 30 36 24
+             C 28 16 18 10 10 4 Z" 
+          fill="#ffffff" stroke="#000000" stroke-width="3.2" stroke-linejoin="round" />
+
+    <!-- Palm and knuckle crease details -->
+    <path d="M -16 -8 L -8 -2" stroke="#000000" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M -24 -2 L -14 6" stroke="#000000" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M 2 -12 L 10 -6" stroke="#000000" stroke-width="2.2" stroke-linecap="round" />
+    <path d="M 14 -4 L 22 4" stroke="#000000" stroke-width="2.2" stroke-linecap="round" />
+  </g>
+</svg>
