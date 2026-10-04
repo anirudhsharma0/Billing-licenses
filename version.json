@@ -1,9 +1,9 @@
 {
-  "version": "5.1",
+  "version": "5.2",
   "build_number": 1,
   "release_date": "2026-10-04",
-  "windows_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.1/BillingApp_Setup_v5.1.exe",
-  "android_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.1/app-release.apk",
-  "release_notes": "1. Dashboard bills list cards made sleek and compact\n2. Upgraded to Version 5.1\n3. Lock screen made 100% tamper-proof",
+  "windows_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.2/BillingApp_Setup_v5.2.exe",
+  "android_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.2/app-release.apk",
+  "release_notes": "1. Upgraded to Version 5.2\n2. Direct Settings & Support Dialog with Agency Contact\n3. Sleek compact bill dashboard & tamper-proof lock screen",
   "mandatory": false
 }

@@ -1,6 +1,6 @@
 class UpdateConfig {
   // Current app version (update this when releasing new versions)
-  static const String currentVersion = '5.1';
+  static const String currentVersion = '5.2';
   static const int currentBuildNumber = 1;
 
   // GitHub repository details
