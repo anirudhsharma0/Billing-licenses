@@ -56,10 +56,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // 1. Sleek Compact Live Financial Strip (Zero wasted vertical height)
-          _buildCompactSummaryStrip(invoice),
-
-          // 2. Full-Width 4-Step Form Navigation (No cutoffs, No "4. Sel" bug)
+          // 1. Full-Width 4-Step Form Navigation (No cutoffs, No "4. Sel" bug)
           Container(
             decoration: const BoxDecoration(
               color: Colors.white,
@@ -117,68 +114,9 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
   }
 
   // ---------------------------------------------------------------------------
-  // A. SLEEK FINANCIAL SUMMARY STRIP (Clean & Compact)
-  // ---------------------------------------------------------------------------
-  Widget _buildCompactSummaryStrip(Invoice invoice) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-      decoration: const BoxDecoration(
-        color: Color(0xFFF1F5F9),
-        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0))),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.inventory_2_outlined, size: 14, color: Color(0xFF0284C7)),
-          const SizedBox(width: 5),
-          const Text(
-            'कर योग्य (Taxable): ',
-            style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
-          ),
-          Text(
-            NumberToWords.formatWithSymbol(invoice.totalTaxableValue),
-            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
-          ),
-          const Spacer(),
-          const Icon(Icons.percent_rounded, size: 14, color: Color(0xFF4F46E5)),
-          const SizedBox(width: 5),
-          Text(
-            '${invoice.taxMode == TaxMode.cgstSgst ? "CGST+SGST" : "IGST"}: ',
-            style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600, color: Color(0xFF475569)),
-          ),
-          Text(
-            NumberToWords.formatWithSymbol(invoice.totalTaxAmount),
-            style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w800, color: Color(0xFF4F46E5)),
-          ),
-          const Spacer(),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F5EE),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFF00A86B).withValues(alpha: 0.3)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'कुल बिल: ',
-                  style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.w700, color: Color(0xFF00A86B)),
-                ),
-                Text(
-                  NumberToWords.formatWithSymbol(invoice.grandTotal),
-                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF00A86B)),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ---------------------------------------------------------------------------
   // TAB 1: BUYER & CONSIGNEE DETAILS (Form View)
   // ---------------------------------------------------------------------------
+
   Widget _buildBuyerConsigneeTab(BuildContext context, InvoiceProvider provider, Invoice invoice) {
     final isTax = invoice.invoiceTitle.toUpperCase().contains('TAX');
 
