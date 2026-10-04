@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../config/agency_config.dart';
 import '../config/update_config.dart';
-import '../providers/invoice_provider.dart';
-import 'firebase_settings_dialog.dart';
 import 'update_dialog.dart';
 
 class AppSettingsDialog extends StatelessWidget {
@@ -32,14 +29,12 @@ class AppSettingsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final invoiceProvider = context.watch<InvoiceProvider>();
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       backgroundColor: Colors.white,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 580, maxHeight: 680),
+        constraints: const BoxConstraints(maxWidth: 580, maxHeight: 660),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -190,79 +185,9 @@ class AppSettingsDialog extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 16),
 
-                    // B. Cloud Sync & Database Status Box
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF6366F1).withValues(alpha: 0.12),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(
-                              Icons.cloud_sync_rounded,
-                              size: 18,
-                              color: Color(0xFF6366F1),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'क्लाउड डेटा सिंक (Cloud Backup)',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF0F172A),
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  invoiceProvider.isFirebaseConfigured
-                                      ? 'Cloud Firestore कनेक्टेड है'
-                                      : 'लोकल स्टोरेज मोड (Local)',
-                                  style: TextStyle(
-                                    fontSize: 11.5,
-                                    fontWeight: FontWeight.w600,
-                                    color: invoiceProvider.isFirebaseConfigured
-                                        ? const Color(0xFF059669)
-                                        : const Color(0xFF64748B),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          OutlinedButton.icon(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) => const FirebaseSettingsDialog(),
-                              );
-                            },
-                            icon: const Icon(Icons.settings_outlined, size: 14),
-                            label: const Text('सिंक सेटिंग्स', style: TextStyle(fontSize: 11.5)),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 18),
-
-                    // C. AGENCY ADVERTISEMENT & DEVELOPER BRANDING (Core User Request)
+                    // B. AGENCY ADVERTISEMENT & DEVELOPER BRANDING
                     Container(
                       padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
@@ -430,32 +355,59 @@ class AppSettingsDialog extends StatelessWidget {
                                 ),
                               ),
 
-                              // 3. Technical Support Call / WhatsApp
+                              // 3. WhatsApp / Phone Button
                               InkWell(
-                                onTap: () => _copyToClipboard(context, AgencyConfig.websiteDisplay, 'सपोर्ट विवरण'),
+                                onTap: () => _copyToClipboard(context, AgencyConfig.phoneDisplay, 'फ़ोन / व्हाट्सएप नंबर'),
                                 borderRadius: BorderRadius.circular(8),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF00A86B).withValues(alpha: 0.18),
+                                    color: const Color(0xFF22C55E).withValues(alpha: 0.15),
                                     borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(color: const Color(0xFF00A86B).withValues(alpha: 0.4)),
+                                    border: Border.all(color: const Color(0xFF22C55E).withValues(alpha: 0.35)),
                                   ),
                                   child: const Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.headset_mic_rounded, size: 14, color: Color(0xFF34D399)),
+                                      Icon(Icons.phone_in_talk_rounded, size: 14, color: Color(0xFF4ADE80)),
                                       SizedBox(width: 6),
                                       Text(
-                                        '24x7 Tech Support & Maintenance',
+                                        'Call / WhatsApp: ${AgencyConfig.phoneDisplay}',
                                         style: TextStyle(
                                           fontSize: 11.5,
                                           fontWeight: FontWeight.w700,
-                                          color: Color(0xFF34D399),
+                                          color: Color(0xFF4ADE80),
                                         ),
                                       ),
+                                      SizedBox(width: 4),
+                                      Icon(Icons.copy_rounded, size: 11, color: Color(0xFF86EFAC)),
                                     ],
                                   ),
+                                ),
+                              ),
+
+                              // 4. Technical Support Badge
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.05),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                                ),
+                                child: const Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.headset_mic_rounded, size: 14, color: Color(0xFF38BDF8)),
+                                    SizedBox(width: 6),
+                                    Text(
+                                      '24x7 Tech Support',
+                                      style: TextStyle(
+                                        fontSize: 11.5,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xFFCBD5E1),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],

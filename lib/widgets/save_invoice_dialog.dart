@@ -337,7 +337,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
                           child: Text(
                             provider.isFirebaseConfigured
                                 ? 'Cloud Firestore Sync Active: बिल क्लाउड पर सुरक्षित रहेगा।'
-                                : 'Local Storage Mode: Firebase Settings में क्रेडेंशियल्स दर्ज करके क्लाउड सिंक ऑन करें।',
+                                : 'Local Storage Mode: बिल सुरक्षित रूप से आपके कंप्यूटर में सेव होगा।',
                             style: TextStyle(
                               fontSize: 11,
                               color: provider.isFirebaseConfigured
