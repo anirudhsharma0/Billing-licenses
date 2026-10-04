@@ -281,9 +281,9 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                     ),
                   )
                 : ListView.separated(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     itemCount: filtered.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (context, index) {
                       final inv = filtered[index];
                       final isCurrent = inv.id == provider.invoice.id;
@@ -293,28 +293,28 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                           : '#';
 
                       return Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(10),
                           border: Border.all(
                             color: isCurrent ? const Color(0xFF6366F1) : const Color(0xFFE2E8F0),
-                            width: isCurrent ? 1.8 : 1.0,
+                            width: isCurrent ? 1.6 : 1.0,
                           ),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
-                              color: const Color(0x0A000000),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
+                              color: Color(0x08000000),
+                              blurRadius: 4,
+                              offset: Offset(0, 1.5),
                             ),
                           ],
                         ),
                         child: Row(
                           children: [
-                            // Customer Initial Avatar
+                            // Customer Initial Avatar (Compact 36x36)
                             Container(
-                              width: 48,
-                              height: 48,
+                              width: 36,
+                              height: 36,
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: isCurrent
@@ -323,19 +323,19 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                               ),
                               alignment: Alignment.center,
                               child: Text(
                                 initial,
                                 style: const TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                  fontSize: 15,
                                 ),
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: 12),
 
                             // Customer & Invoice Details
                             Expanded(
@@ -349,18 +349,18 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                         child: Text(
                                           primaryName,
                                           style: const TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 15,
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 14,
                                             color: Color(0xFF0F172A),
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 6),
                                       // Proforma vs Tax Invoice Badge
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                         decoration: BoxDecoration(
                                           color: inv.invoiceTitle.toUpperCase().contains('TAX')
                                               ? const Color(0xFFECFDF5)
@@ -379,15 +379,15 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                             color: inv.invoiceTitle.toUpperCase().contains('TAX')
                                                 ? const Color(0xFF047857)
                                                 : const Color(0xFF4338CA),
-                                            fontSize: 9.5,
+                                            fontSize: 9,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
                                       if (isCurrent) ...[
-                                        const SizedBox(width: 8),
+                                        const SizedBox(width: 6),
                                         Container(
-                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                           decoration: BoxDecoration(
                                             color: const Color(0xFF10B981).withValues(alpha: 0.15),
                                             borderRadius: BorderRadius.circular(4),
@@ -396,15 +396,15 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                             'OPEN IN EDITOR',
                                             style: TextStyle(
                                               color: Color(0xFF059669),
-                                              fontSize: 9.5,
+                                              fontSize: 9,
                                               fontWeight: FontWeight.w800,
                                             ),
                                           ),
                                         ),
                                       ],
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 6),
                                       Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                                        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
                                         decoration: BoxDecoration(
                                           color: inv.isSynced
                                               ? const Color(0xFF10B981).withValues(alpha: 0.12)
@@ -416,15 +416,15 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                           children: [
                                             Icon(
                                               inv.isSynced ? Icons.cloud_done_rounded : Icons.cloud_queue_rounded,
-                                              size: 11,
+                                              size: 10,
                                               color: inv.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
                                             ),
-                                            const SizedBox(width: 4),
+                                            const SizedBox(width: 3),
                                             Text(
-                                              inv.isSynced ? 'Cloud Synced' : 'Offline (Pending)',
+                                              inv.isSynced ? 'Synced' : 'Offline',
                                               style: TextStyle(
                                                 color: inv.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
-                                                fontSize: 9.5,
+                                                fontSize: 9,
                                                 fontWeight: FontWeight.w700,
                                               ),
                                             ),
@@ -433,7 +433,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 4),
+                                  const SizedBox(height: 3),
                                   Row(
                                     children: [
                                       Text(
@@ -442,55 +442,59 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                             : 'No Invoice #',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w600,
-                                          fontSize: 12,
+                                          fontSize: 11.5,
                                           color: Color(0xFF6366F1),
                                         ),
                                       ),
-                                      const SizedBox(width: 8),
-                                      const Text('•', style: TextStyle(color: Color(0xFFCBD5E1))),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 6),
+                                      const Text('•', style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 10)),
+                                      const SizedBox(width: 6),
                                       Text(
                                         inv.metadata.date.isNotEmpty ? inv.metadata.date : 'No Date',
-                                        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                        style: const TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
                                       ),
-                                      const SizedBox(width: 8),
-                                      const Text('•', style: TextStyle(color: Color(0xFFCBD5E1))),
-                                      const SizedBox(width: 8),
+                                      const SizedBox(width: 6),
+                                      const Text('•', style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 10)),
+                                      const SizedBox(width: 6),
                                       Text(
                                         '${inv.items.length} item(s)',
-                                        style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                                        style: const TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
                                       ),
+                                      if (inv.buyer.address.isNotEmpty) ...[
+                                        const SizedBox(width: 6),
+                                        const Text('•', style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 10)),
+                                        const SizedBox(width: 6),
+                                        Flexible(
+                                          child: Text(
+                                            inv.buyer.address,
+                                            style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
                                     ],
                                   ),
-                                  if (inv.buyer.address.isNotEmpty) ...[
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      inv.buyer.address,
-                                      style: const TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ],
                                 ],
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            const SizedBox(width: 12),
 
-                            // Total Amount
+                            // Total Amount & Actions Column
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   NumberToWords.formatWithSymbol(inv.grandTotal),
                                   style: const TextStyle(
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16,
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 15,
                                     color: Color(0xFF0F172A),
                                   ),
                                 ),
-                                const SizedBox(height: 8),
+                                const SizedBox(height: 5),
 
-                                // Action Buttons
+                                // Action Buttons (Compact row)
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -499,43 +503,51 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                       onPressed: () {
                                         provider.loadSavedInvoice(inv, openPreview: true);
                                       },
-                                      icon: const Icon(Icons.visibility_rounded, size: 14, color: Colors.white),
-                                      label: const Text('बिल देखें', style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold)),
+                                      icon: const Icon(Icons.visibility_rounded, size: 13, color: Colors.white),
+                                      label: const Text('बिल देखें', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color(0xFF00A86B),
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: const Size(0, 28),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         visualDensity: VisualDensity.compact,
                                       ),
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: 4),
 
                                     // 2. WhatsApp Share Button
                                     IconButton(
-                                      icon: const Icon(Icons.share_rounded, size: 18, color: Color(0xFF00A86B)),
+                                      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(Icons.share_rounded, size: 16, color: Color(0xFF00A86B)),
                                       tooltip: 'WhatsApp पर PDF शेयर करें',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => InvoicePdfService.sharePdf(inv),
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: 4),
 
-                                    // 2. Edit Details Button
+                                    // 3. Edit Details Button
                                     OutlinedButton.icon(
                                       onPressed: () {
                                         provider.loadSavedInvoice(inv);
                                         provider.setViewMode('form');
                                       },
-                                      icon: const Icon(Icons.edit_outlined, size: 14),
-                                      label: const Text('एडिट करें', style: TextStyle(fontSize: 12)),
+                                      icon: const Icon(Icons.edit_outlined, size: 13),
+                                      label: const Text('एडिट करें', style: TextStyle(fontSize: 11)),
                                       style: OutlinedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: const Size(0, 28),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         visualDensity: VisualDensity.compact,
                                       ),
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: 4),
 
-                                    // 3. Print / PDF Button
+                                    // 4. Print / PDF Button
                                     IconButton(
-                                      icon: const Icon(Icons.print_rounded, size: 18, color: Color(0xFF059669)),
+                                      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF059669)),
                                       tooltip: 'प्रिंट / PDF डाउनलोड',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () async {
@@ -550,10 +562,13 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                         }
                                       },
                                     ),
+                                    const SizedBox(width: 2),
 
-                                    // 4. Use for Next Customer Button
+                                    // 5. Use for Next Customer Button
                                     IconButton(
-                                      icon: const Icon(Icons.person_add_alt_1_rounded, size: 18, color: Color(0xFF6366F1)),
+                                      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(Icons.person_add_alt_1_rounded, size: 16, color: Color(0xFF6366F1)),
                                       tooltip: 'इस सामान से नए ग्राहक का बिल बनाएं (Next Customer)',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () {
@@ -567,18 +582,24 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                         );
                                       },
                                     ),
+                                    const SizedBox(width: 2),
 
-                                    // 5. Duplicate Button
+                                    // 6. Duplicate Button
                                     IconButton(
-                                      icon: const Icon(Icons.copy_rounded, size: 17, color: Color(0xFF64748B)),
+                                      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(Icons.copy_rounded, size: 15, color: Color(0xFF64748B)),
                                       tooltip: 'कॉपी बनाएं (Duplicate)',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => provider.duplicateSavedInvoice(inv),
                                     ),
+                                    const SizedBox(width: 2),
 
-                                    // 5. Delete Button
+                                    // 7. Delete Button
                                     IconButton(
-                                      icon: const Icon(Icons.delete_outline_rounded, size: 18, color: Color(0xFFDC2626)),
+                                      constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+                                      padding: EdgeInsets.zero,
+                                      icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFDC2626)),
                                       tooltip: 'डिलीट करें (Delete)',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () {

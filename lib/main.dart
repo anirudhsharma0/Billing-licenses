@@ -1,12 +1,18 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/invoice_provider.dart';
 import 'providers/license_provider.dart';
 import 'screens/home_screen.dart';
+import 'services/safe_http_client.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb) {
+    HttpOverrides.global = SafeHttpOverrides();
+  }
   runApp(const BillingApp());
 }
 

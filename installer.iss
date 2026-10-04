@@ -2,7 +2,7 @@
 ; Generated for wisdomCareSolutions
 
 #define MyAppName "Billing Software"
-#define MyAppVersion "1.0.1"
+#define MyAppVersion "1.0.2"
 #define MyAppPublisher "wisdomCareSolutions"
 #define MyAppExeName "billing_app.exe"
 
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\BillingApp
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=build\installer
-OutputBaseFilename=BillingApp_Setup_v1.0.1
+OutputBaseFilename=BillingApp_Setup_v1.0.2
 SetupIconFile=windows\runner\resources\app_icon.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -24,12 +24,14 @@ WizardStyle=modern
 ArchitecturesInstallIn64BitMode=x64compatible
 PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=dialog
+CloseApplications=yes
+RestartApplications=no
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
+Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Files]
 Source: "build\windows\x64\runner\Release\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs

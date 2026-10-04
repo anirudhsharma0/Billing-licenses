@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import '../config/license_config.dart';
+import 'safe_http_client.dart';
 
 class LicenseCheckResult {
   final bool isLicensed;
@@ -113,10 +114,11 @@ class LicenseService {
     final clientId = await getOrCreateClientId();
     final prefs = await SharedPreferences.getInstance();
     final sheetUrl = overrideSheetUrl ?? await LicenseConfig.loadSheetUrl();
+    final client = createSafeClient();
 
     try {
       final uri = Uri.parse(LicenseConfig.formatToCsvUrl(sheetUrl));
-      final response = await http.get(uri).timeout(const Duration(seconds: 6));
+      final response = await client.get(uri).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200 && response.body.trim().isNotEmpty) {
         final lines = response.body.split(RegExp(r'\r?\n'));
@@ -227,6 +229,8 @@ class LicenseService {
     } catch (_) {
       // Network error / offline / timeout - fallback to last known status
       return _fallbackToOffline(prefs, clientId, 'नेटवर्क अनुपलब्ध (ऑफ़लाइन)');
+    } finally {
+      client.close();
     }
 
   }

@@ -167,6 +167,39 @@ class _UpdateDialogState extends State<UpdateDialog> {
                   ],
                 ),
               )
+            else if (_info != null && _info!.isOffline)
+              // Offline or network error state
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFEF2F2),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFFECACA)),
+                ),
+                child: Column(
+                  children: [
+                    const Icon(Icons.wifi_off_rounded, color: Color(0xFFDC2626), size: 36),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'अपडेट सर्वर से संपर्क नहीं हो सका',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Color(0xFFDC2626)),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      _info!.message.isNotEmpty ? _info!.message : 'कृपया इंटरनेट कनेक्शन जांचें।',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 11.5, color: Color(0xFF991B1B)),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      onPressed: _checkUpdate,
+                      icon: const Icon(Icons.refresh_rounded, size: 16),
+                      label: const Text('पुनः जांचें (Retry)'),
+                    ),
+                  ],
+                ),
+              )
             else if (_info != null && !_info!.hasUpdate)
               // Up to date state
               Container(
@@ -189,6 +222,12 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     Text(
                       'Current Version: v${UpdateConfig.currentVersion}',
                       style: const TextStyle(fontSize: 12, color: Color(0xFF166534), fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(height: 10),
+                    TextButton.icon(
+                      onPressed: _checkUpdate,
+                      icon: const Icon(Icons.refresh_rounded, size: 15, color: Color(0xFF166534)),
+                      label: const Text('पुनः जांचें (Check Again)', style: TextStyle(fontSize: 12, color: Color(0xFF166534))),
                     ),
                   ],
                 ),

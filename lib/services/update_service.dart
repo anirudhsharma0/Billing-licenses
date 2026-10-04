@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../config/update_config.dart';
+import 'safe_http_client.dart';
 
 class UpdateInfo {
   final bool hasUpdate;
@@ -51,11 +52,19 @@ class UpdateService {
   /// Check for latest update from GitHub repository
   static Future<UpdateInfo> checkForUpdate() async {
     const current = UpdateConfig.currentVersion;
+    final client = createSafeClient();
 
     try {
-      // 1. Try checking version.json from GitHub
-      final versionUri = Uri.parse(UpdateConfig.versionJsonUrl);
-      final response = await http.get(versionUri).timeout(const Duration(seconds: 6));
+      // 1. Try checking version.json from GitHub with cache-busting timestamp
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final versionUri = Uri.parse('${UpdateConfig.versionJsonUrl}?t=$timestamp');
+      final response = await client.get(
+        versionUri,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+        },
+      ).timeout(const Duration(seconds: 12));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -73,23 +82,28 @@ class UpdateService {
         }
 
         final bool hasUpdate = isNewerVersion(latest, current);
-        return UpdateInfo(
-          hasUpdate: hasUpdate,
-          currentVersion: current,
-          latestVersion: latest,
-          downloadUrl: downloadUrl,
-          releaseNotes: notes,
-          mandatory: mandatory,
-          message: hasUpdate ? 'नया अपडेट उपलब्ध है!' : 'आप नवीनतम वर्जन पर हैं।',
-        );
+        if (hasUpdate) {
+          return UpdateInfo(
+            hasUpdate: true,
+            currentVersion: current,
+            latestVersion: latest,
+            downloadUrl: downloadUrl,
+            releaseNotes: notes,
+            mandatory: mandatory,
+            message: 'नया अपडेट उपलब्ध है!',
+          );
+        }
       }
 
       // 2. Fallback: Check GitHub Releases API
       final releasesUri = Uri.parse(UpdateConfig.githubReleasesApiUrl);
-      final apiResponse = await http.get(
+      final apiResponse = await client.get(
         releasesUri,
-        headers: {'Accept': 'application/vnd.github.v3+json'},
-      ).timeout(const Duration(seconds: 6));
+        headers: {
+          'Accept': 'application/vnd.github.v3+json',
+          'Cache-Control': 'no-cache',
+        },
+      ).timeout(const Duration(seconds: 12));
 
       if (apiResponse.statusCode == 200) {
         final data = json.decode(apiResponse.body);
@@ -111,14 +125,16 @@ class UpdateService {
         }
 
         final bool hasUpdate = isNewerVersion(tagName, current);
-        return UpdateInfo(
-          hasUpdate: hasUpdate,
-          currentVersion: current,
-          latestVersion: tagName,
-          downloadUrl: downloadUrl,
-          releaseNotes: body,
-          message: hasUpdate ? 'नया अपडेट उपलब्ध है!' : 'आप नवीनतम वर्जन पर हैं।',
-        );
+        if (hasUpdate) {
+          return UpdateInfo(
+            hasUpdate: true,
+            currentVersion: current,
+            latestVersion: tagName,
+            downloadUrl: downloadUrl,
+            releaseNotes: body,
+            message: 'नया अपडेट उपलब्ध है!',
+          );
+        }
       }
 
       return const UpdateInfo(
@@ -127,14 +143,16 @@ class UpdateService {
         latestVersion: current,
         message: 'आप नवीनतम वर्जन पर हैं।',
       );
-    } catch (_) {
-      return const UpdateInfo(
+    } catch (e) {
+      return UpdateInfo(
         hasUpdate: false,
         isOffline: true,
         currentVersion: current,
         latestVersion: current,
-        message: 'अपडेट चेक करने के लिए इंटरनेट से कनेक्ट करें।',
+        message: 'सर्वर से संपर्क नहीं हो सका ($e)',
       );
+    } finally {
+      client.close();
     }
   }
 
@@ -143,7 +161,7 @@ class UpdateService {
     String url, {
     required Function(double progress, int receivedBytes, int totalBytes) onProgress,
   }) async {
-    final client = http.Client();
+    final client = createSafeClient();
     try {
       final uri = Uri.parse(url);
       final request = http.Request('GET', uri);
