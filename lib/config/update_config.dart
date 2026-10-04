@@ -1,7 +1,7 @@
 class UpdateConfig {
   // Current app version (update this when releasing new versions)
-  static const String currentVersion = '1.0.2';
-  static const int currentBuildNumber = 3;
+  static const String currentVersion = '5.1';
+  static const int currentBuildNumber = 1;
 
   // GitHub repository details
   static const String githubRepoOwner = 'anirudhsharma0';
