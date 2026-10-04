@@ -1,0 +1,9 @@
+{
+  "version": "1.0.0",
+  "build_number": 1,
+  "release_date": "2026-10-04",
+  "windows_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v1.0.0/billing_app_windows.zip",
+  "android_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v1.0.0/billing_app.apk",
+  "release_notes": "1. Offline storage with automatic Firebase cloud synchronization\n2. Google Sheet live license validation (TRUE/FALSE control)\n3. A4 GST Invoice & Proforma Bill PDF printing with live preview\n4. In-App Auto-Update system via GitHub Releases",
+  "mandatory": false
+}
