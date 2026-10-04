@@ -17,6 +17,7 @@ import '../widgets/license_lock_screen.dart';
 import '../widgets/save_invoice_dialog.dart';
 import '../widgets/saved_bills_view.dart';
 import '../widgets/update_dialog.dart';
+import '../widgets/app_settings_dialog.dart';
 import 'mobile_bills_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -364,12 +365,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(width: 8),
 
-                    // Software Update / Version Chip
+                    // Settings & Software Update Button in Navbar
                     InkWell(
-                      onTap: () => UpdateDialog.show(context),
+                      onTap: () => AppSettingsDialog.show(context),
                       borderRadius: BorderRadius.circular(8),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
                         decoration: BoxDecoration(
                           color: const Color(0xFFF1F5F9),
                           borderRadius: BorderRadius.circular(8),
@@ -378,10 +379,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: const Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.system_update_rounded, size: 12.5, color: Color(0xFF475569)),
-                            SizedBox(width: 4),
+                            Icon(Icons.settings_outlined, size: 14, color: Color(0xFF334155)),
+                            SizedBox(width: 5),
                             Text(
-                              'v${UpdateConfig.currentVersion}',
+                              'सेटिंग्स (v${UpdateConfig.currentVersion})',
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.bold,
