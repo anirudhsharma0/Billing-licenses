@@ -11,12 +11,15 @@ class LicenseLockScreen extends StatefulWidget {
 }
 
 class _LicenseLockScreenState extends State<LicenseLockScreen> {
+  int _supportTapCount = 0;
+
   void _openAdminSheetDialog(String clientId) {
     final controller = TextEditingController();
     LicenseConfig.loadSheetUrl().then((url) {
       controller.text = url;
     });
 
+    final clientIdController = TextEditingController(text: clientId);
     final pinController = TextEditingController();
     bool pinVerified = false;
 
@@ -41,7 +44,7 @@ class _LicenseLockScreenState extends State<LicenseLockScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'Google Sheet लिंक बदलने या Client ID देखने के लिए पिन दर्ज करें (Default PIN: 8899):',
+                          'Google Sheet लिंक बदलने या Client ID देखने/सेट करने के लिए पिन दर्ज करें (PIN: 8899):',
                           style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
                         ),
                         const SizedBox(height: 12),
@@ -71,33 +74,34 @@ class _LicenseLockScreenState extends State<LicenseLockScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFF1F5F9),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFE2E8F0)),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.fingerprint_rounded, size: 18, color: Color(0xFF00A86B)),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: SelectableText(
-                                  'Device ID: $clientId',
-                                  style: const TextStyle(
-                                    fontFamily: 'monospace',
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
+                        const Text(
+                          'Client / Device ID:',
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 6),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                controller: clientIdController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Client ID',
+                                  prefixIcon: Icon(Icons.fingerprint_rounded),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(width: 8),
+                            OutlinedButton(
+                              onPressed: () {
+                                clientIdController.text = LicenseConfig.defaultClientId;
+                              },
+                              child: const Text('Default ID'),
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Google Sheet CSV URL या Sheet ID दर्ज करें:',
+                          'Google Sheet CSV URL या Sheet ID:',
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
                         ),
                         const SizedBox(height: 6),
@@ -142,11 +146,16 @@ class _LicenseLockScreenState extends State<LicenseLockScreen> {
               ElevatedButton(
                 onPressed: () async {
                   final newUrl = controller.text.trim();
-                  if (newUrl.isNotEmpty) {
-                    final provider = context.read<LicenseProvider>();
-                    await provider.updateSheetUrl(newUrl);
-                    if (ctx.mounted) Navigator.of(ctx).pop();
+                  final newId = clientIdController.text.trim();
+                  final provider = context.read<LicenseProvider>();
+
+                  if (newId.isNotEmpty && newId != clientId) {
+                    await provider.updateClientId(newId);
                   }
+                  if (newUrl.isNotEmpty) {
+                    await provider.updateSheetUrl(newUrl);
+                  }
+                  if (ctx.mounted) Navigator.of(ctx).pop();
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00A86B)),
                 child: const Text('सेव करें & जांचें', style: TextStyle(color: Colors.white)),
@@ -178,7 +187,7 @@ class _LicenseLockScreenState extends State<LicenseLockScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.settings_outlined, color: Color(0xFF334155), size: 18),
+                        icon: const Icon(Icons.settings_outlined, color: Color(0xFF64748B), size: 20),
                         tooltip: 'Admin Settings',
                         onPressed: () => _openAdminSheetDialog(clientId),
                       ),
@@ -247,14 +256,23 @@ class _LicenseLockScreenState extends State<LicenseLockScreen> {
                         ),
                         const SizedBox(height: 8),
 
-                        // Subtitle: Technical Support wisdomCareSolutions
-                        const Text(
-                          'Technical Support: wisdomCareSolutions',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF94A3B8),
+                        // Subtitle: Technical Support wisdomCareSolutions (with 5-tap Admin shortcut)
+                        GestureDetector(
+                          onTap: () {
+                            _supportTapCount++;
+                            if (_supportTapCount >= 5) {
+                              _supportTapCount = 0;
+                              _openAdminSheetDialog(clientId);
+                            }
+                          },
+                          child: const Text(
+                            'Technical Support: wisdomCareSolutions',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF94A3B8),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 32),

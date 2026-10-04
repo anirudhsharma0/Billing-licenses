@@ -10,6 +10,9 @@ class LicenseConfig {
   static String defaultSheetUrl =
       'https://docs.google.com/spreadsheets/d/e/2PACX-1vSu7qfOXPX6rPqOTosqxXlb5ebRmfsRGEPZsa5TUUwRMjNwL0aZMbMtaEZ95ZHu_KJ9a10YBKEtPpID/pub?output=csv';
 
+  // Default Client ID matching Google Sheet
+  static const String defaultClientId = 'KB-TEST-OFFLINE-02';
+
   // Admin contact info for payment and support
   static String defaultAdminPhone = '+91 98123 45678';
   static String defaultAdminName = 'Kishan Bharti Society / Software Admin';

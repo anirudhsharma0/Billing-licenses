@@ -31,18 +31,17 @@ class LicenseService {
   static const String _keyLastMessage = 'kb_last_license_message';
   static const String _keyLastCheckTime = 'kb_last_license_check_time';
 
-  /// Get or generate a permanent, immutable Client ID for this device
+  /// Get or generate a permanent Client ID for this device
   static Future<String> getOrCreateClientId() async {
     // 1. Check SharedPreferences first
     final prefs = await SharedPreferences.getInstance();
     final savedId = prefs.getString(_keyClientId)?.trim();
     if (savedId != null && savedId.isNotEmpty) {
-      // Backup to filesystem if on Windows
       _persistToFileOnWindows(savedId);
       return savedId;
     }
 
-    // 2. On Windows, check persistent filesystem storage as fallback (survives cache clear / reinstall)
+    // 2. On Windows, check persistent filesystem storage as fallback
     if (!kIsWeb && Platform.isWindows) {
       try {
         final appData = Platform.environment['APPDATA'] ?? Platform.environment['LOCALAPPDATA'];
@@ -51,7 +50,7 @@ class LicenseService {
           final file = File('${dir.path}\\.device_license.id');
           if (file.existsSync()) {
             final existing = file.readAsStringSync().trim();
-            if (existing.startsWith('KB-') && existing.length >= 12) {
+            if (existing.isNotEmpty) {
               await prefs.setString(_keyClientId, existing);
               return existing;
             }
@@ -60,15 +59,36 @@ class LicenseService {
       } catch (_) {}
     }
 
-    // 3. Generate a brand new, clean, immutable ID
-    // Format: KB-XXXX-XXXX-XXXX (e.g. KB-8A2F-9C1D-4E3B)
-    final rawUuid = const Uuid().v4().replaceAll('-', '').toUpperCase();
-    final newId = 'KB-${rawUuid.substring(0, 4)}-${rawUuid.substring(4, 8)}-${rawUuid.substring(8, 12)}';
+    // 3. Default to configured initial ID matching Google Sheet (KB-TEST-OFFLINE-02)
+    final initialId = LicenseConfig.defaultClientId;
+    await prefs.setString(_keyClientId, initialId);
+    _persistToFileOnWindows(initialId);
 
-    await prefs.setString(_keyClientId, newId);
-    _persistToFileOnWindows(newId);
+    return initialId;
+  }
 
-    return newId;
+  /// Manually update Client ID (via Admin settings)
+  static Future<void> setClientId(String newId) async {
+    final cleanId = newId.trim();
+    if (cleanId.isEmpty) return;
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyClientId, cleanId);
+    _persistToFileOnWindows(cleanId);
+  }
+
+  /// Check whether a status string represents allowed/active
+  static bool _isTruthy(String statusStr) {
+    final s = statusStr.trim().toUpperCase();
+    return s == 'TRUE' ||
+        s == '1' ||
+        s == 'YES' ||
+        s == 'ACTIVE' ||
+        s == 'OK' ||
+        s == 'PASS' ||
+        s == 'PAID' ||
+        s == 'ENABLE' ||
+        s == 'ENABLED';
   }
 
   /// Backup ID to Windows filesystem
@@ -105,6 +125,7 @@ class LicenseService {
         String? clientName;
         String? message;
 
+        // Pass 1: Look for exact Client ID match (e.g. KB-TEST-OFFLINE-02)
         for (final rawLine in lines) {
           final line = rawLine.trim();
           if (line.isEmpty) continue;
@@ -112,31 +133,60 @@ class LicenseService {
           final fields = _parseCsvLine(line);
           if (fields.isEmpty) continue;
 
-          // Col 0: Client ID
           final rowId = fields[0].replaceAll('"', '').trim().toUpperCase();
-          if (rowId == clientId.toUpperCase()) {
+          if (rowId == clientId.toUpperCase() ||
+              rowId == LicenseConfig.defaultClientId.toUpperCase()) {
             found = true;
-
-            // Col 1: Status (TRUE / FALSE)
-            final statusStr = fields.length > 1 ? fields[1].replaceAll('"', '').trim().toUpperCase() : 'FALSE';
-            isAllowed = (statusStr == 'TRUE' ||
-                statusStr == '1' ||
-                statusStr == 'YES' ||
-                statusStr == 'ACTIVE' ||
-                statusStr == 'OK' ||
-                statusStr == 'PASS');
-
-            // Col 2: Client Name (Optional)
-            if (fields.length > 2) {
-              clientName = fields[2].replaceAll('"', '').trim();
-            }
-
-            // Col 3: Custom message / Remarks / Expiry (Optional)
-            if (fields.length > 3) {
-              message = fields[3].replaceAll('"', '').trim();
-            }
-
+            final statusStr = fields.length > 1 ? fields[1].replaceAll('"', '').trim() : 'FALSE';
+            isAllowed = _isTruthy(statusStr);
+            if (fields.length > 2) clientName = fields[2].replaceAll('"', '').trim();
+            if (fields.length > 3) message = fields[3].replaceAll('"', '').trim();
             break;
+          }
+        }
+
+        // Pass 2: Look for wildcard / global rows (ALL / GLOBAL / * / DEFAULT)
+        if (!found) {
+          for (final rawLine in lines) {
+            final line = rawLine.trim();
+            if (line.isEmpty) continue;
+
+            final fields = _parseCsvLine(line);
+            if (fields.isEmpty) continue;
+
+            final rowId = fields[0].replaceAll('"', '').trim().toUpperCase();
+            if (rowId == 'ALL' || rowId == 'GLOBAL' || rowId == '*' || rowId == 'DEFAULT') {
+              found = true;
+              final statusStr = fields.length > 1 ? fields[1].replaceAll('"', '').trim() : 'FALSE';
+              isAllowed = _isTruthy(statusStr);
+              if (fields.length > 2) clientName = fields[2].replaceAll('"', '').trim();
+              if (fields.length > 3) message = fields[3].replaceAll('"', '').trim();
+              break;
+            }
+          }
+        }
+
+        // Pass 3: If sheet has only 1 data row, use that row's status
+        // (Allows single-client setup like "KB-TEST-OFFLINE-02,TRUE,Deepak Godara" to work automatically)
+        if (!found) {
+          final dataRows = lines.where((l) {
+            final t = l.trim();
+            if (t.isEmpty) return false;
+            final f = _parseCsvLine(t);
+            if (f.isEmpty) return false;
+            final first = f[0].replaceAll('"', '').trim().toUpperCase();
+            return first != 'CLIENT ID' && first != 'CLIENTID' && first != 'ID';
+          }).toList();
+
+          if (dataRows.length == 1) {
+            final fields = _parseCsvLine(dataRows.first.trim());
+            if (fields.length >= 2) {
+              found = true;
+              final statusStr = fields[1].replaceAll('"', '').trim();
+              isAllowed = _isTruthy(statusStr);
+              if (fields.length > 2) clientName = fields[2].replaceAll('"', '').trim();
+              if (fields.length > 3) message = fields[3].replaceAll('"', '').trim();
+            }
           }
         }
 
@@ -178,6 +228,7 @@ class LicenseService {
       // Network error / offline / timeout - fallback to last known status
       return _fallbackToOffline(prefs, clientId, 'नेटवर्क अनुपलब्ध (ऑफ़लाइन)');
     }
+
   }
 
   /// Offline fallback: Return last known status as requested by user

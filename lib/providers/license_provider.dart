@@ -70,6 +70,13 @@ class LicenseProvider with ChangeNotifier {
     await checkLicense();
   }
 
+  /// Update Client ID (Admin configuration)
+  Future<void> updateClientId(String newId) async {
+    await LicenseService.setClientId(newId);
+    _clientId = newId;
+    await checkLicense();
+  }
+
   /// Testing helper to set mock state
   @visibleForTesting
   void setMockState({
