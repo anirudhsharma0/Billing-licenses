@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:uuid/uuid.dart';
 import '../config/license_config.dart';
 import 'safe_http_client.dart';
 
@@ -26,6 +24,7 @@ class LicenseCheckResult {
 }
 
 class LicenseService {
+  static int _requestCounter = 0;
   static const String _keyClientId = 'kb_permanent_client_id';
   static const String _keyLastStatus = 'kb_last_known_license_status';
   static const String _keyLastClientName = 'kb_last_client_name';
@@ -117,17 +116,33 @@ class LicenseService {
     final client = createSafeClient();
 
     try {
-      final uri = Uri.parse(LicenseConfig.formatToCsvUrl(sheetUrl));
-      final response = await client.get(uri).timeout(const Duration(seconds: 8));
+      final baseCsvUrl = LicenseConfig.formatToCsvUrl(sheetUrl);
+      final separator = baseCsvUrl.contains('?') ? '&' : '?';
+      _requestCounter++;
+      final cacheBustedUrl =
+          '$baseCsvUrl${separator}_t=${DateTime.now().millisecondsSinceEpoch}_$_requestCounter';
+      final uri = Uri.parse(cacheBustedUrl);
+      final response = await client.get(
+        uri,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
+        },
+      ).timeout(const Duration(seconds: 8));
 
-      if (response.statusCode == 200 && response.body.trim().isNotEmpty) {
-        final lines = response.body.split(RegExp(r'\r?\n'));
+      final bodyTrimmed = response.body.replaceFirst('\uFEFF', '').trim();
+      final isHtmlResponse = bodyTrimmed.toLowerCase().startsWith('<!doctype') ||
+          bodyTrimmed.toLowerCase().startsWith('<html');
+
+      if (response.statusCode == 200 && bodyTrimmed.isNotEmpty && !isHtmlResponse) {
+        final lines = bodyTrimmed.split(RegExp(r'\r?\n'));
         bool found = false;
         bool isAllowed = false;
         String? clientName;
         String? message;
 
-        // Pass 1: Look for exact Client ID match (e.g. KB-TEST-OFFLINE-02)
+        // Pass 1: Look for EXACT Client ID match ONLY (never let defaultClientId override a specific client row)
         for (final rawLine in lines) {
           final line = rawLine.trim();
           if (line.isEmpty) continue;
@@ -136,8 +151,7 @@ class LicenseService {
           if (fields.isEmpty) continue;
 
           final rowId = fields[0].replaceAll('"', '').trim().toUpperCase();
-          if (rowId == clientId.toUpperCase() ||
-              rowId == LicenseConfig.defaultClientId.toUpperCase()) {
+          if (rowId == clientId.toUpperCase()) {
             found = true;
             final statusStr = fields.length > 1 ? fields[1].replaceAll('"', '').trim() : 'FALSE';
             isAllowed = _isTruthy(statusStr);
@@ -147,7 +161,7 @@ class LicenseService {
           }
         }
 
-        // Pass 2: Look for wildcard / global rows (ALL / GLOBAL / * / DEFAULT)
+        // Pass 2: Look for wildcard / global rows (ALL / GLOBAL / * / DEFAULT) or defaultClientId fallback
         if (!found) {
           for (final rawLine in lines) {
             final line = rawLine.trim();
@@ -157,7 +171,11 @@ class LicenseService {
             if (fields.isEmpty) continue;
 
             final rowId = fields[0].replaceAll('"', '').trim().toUpperCase();
-            if (rowId == 'ALL' || rowId == 'GLOBAL' || rowId == '*' || rowId == 'DEFAULT') {
+            if (rowId == 'ALL' ||
+                rowId == 'GLOBAL' ||
+                rowId == '*' ||
+                rowId == 'DEFAULT' ||
+                rowId == LicenseConfig.defaultClientId.toUpperCase()) {
               found = true;
               final statusStr = fields.length > 1 ? fields[1].replaceAll('"', '').trim() : 'FALSE';
               isAllowed = _isTruthy(statusStr);

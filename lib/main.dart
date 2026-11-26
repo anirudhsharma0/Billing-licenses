@@ -5,6 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/invoice_provider.dart';
 import 'providers/license_provider.dart';
+import 'providers/purchase_provider.dart';
+import 'providers/receipt_provider.dart';
 import 'screens/home_screen.dart';
 import 'services/safe_http_client.dart';
 
@@ -46,6 +48,8 @@ class BillingApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => LicenseProvider()),
         ChangeNotifierProvider(create: (_) => InvoiceProvider()),
+        ChangeNotifierProvider(create: (_) => ReceiptProvider()),
+        ChangeNotifierProvider(create: (_) => PurchaseProvider()),
       ],
       child: MaterialApp(
         title: 'The Kishan Bharti Coop. M.P. Society Ltd.',

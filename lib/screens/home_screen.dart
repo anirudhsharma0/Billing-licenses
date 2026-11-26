@@ -6,19 +6,23 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../models/invoice_model.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/purchase_provider.dart';
+import '../providers/receipt_provider.dart';
 import '../services/invoice_pdf_service.dart';
 import '../providers/license_provider.dart';
+import '../services/update_service.dart';
 import '../utils/number_to_words.dart';
 import '../config/update_config.dart';
-import '../widgets/firebase_settings_dialog.dart';
 import '../widgets/invoice_form_panel.dart';
 import '../widgets/invoice_preview_sheet.dart';
 import '../widgets/license_lock_screen.dart';
 import '../widgets/save_invoice_dialog.dart';
 import '../widgets/saved_bills_view.dart';
-import '../widgets/update_dialog.dart';
 import '../widgets/app_settings_dialog.dart';
+import '../widgets/update_dialog.dart';
 import 'mobile_bills_screen.dart';
+import 'purchase_list_screen.dart';
+import 'receipt_voucher_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,6 +33,23 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool? _forceDesktopMode;
+  bool _hasCheckedStartupUpdate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkStartupUpdate();
+  }
+
+  Future<void> _checkStartupUpdate() async {
+    if (_hasCheckedStartupUpdate) return;
+    _hasCheckedStartupUpdate = true;
+    final info = await UpdateService.checkForUpdate();
+    if (!mounted) return;
+    if (info.hasUpdate && context.read<LicenseProvider>().isLicensed) {
+      UpdateDialog.show(context);
+    }
+  }
 
   bool _isMobileView(BoxConstraints constraints) {
     if (_forceDesktopMode != null) {
@@ -45,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // 1. License Verification: Check if license is active
     final license = context.watch<LicenseProvider>();
 
-    if (license.isLoading) {
+    if (license.isLoading && license.lastChecked == null) {
       return const Scaffold(
         backgroundColor: Color(0xFF0F172A),
         body: Center(
@@ -155,10 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ---------------------------------------------------------------------------
-  // 1. COMPACT TOP NAVIGATION BAR (Small Size, Zero-Overflow, Professional Header)
-  // ---------------------------------------------------------------------------
-  // ---------------------------------------------------------------------------
-  // 1. COMPACT TOP NAVIGATION BAR (All Options Visible On Screen)
+  // 1. BOOTSTRAP-STYLE SINGLE-ROW TOP NAVBAR (Zero Horizontal Scroll + Dropdown)
   // ---------------------------------------------------------------------------
   Widget _buildCompactTopNavBar(
     BuildContext context,
@@ -166,8 +184,34 @@ class _HomeScreenState extends State<HomeScreen> {
     Invoice invoice,
     String formattedDate,
   ) {
+    final receiptsCount = context.watch<ReceiptProvider>().savedReceipts.length;
+    final purchasesCount = context.watch<PurchaseProvider>().savedPurchases.length;
+
+    // Determine dropdown label based on active viewMode
+    final bool isDropdownViewActive = provider.viewMode == 'split' ||
+        provider.viewMode == 'preview' ||
+        provider.viewMode == 'receipts' ||
+        provider.viewMode == 'purchases';
+
+    String dropdownLabel = 'मेनू / Views';
+    IconData dropdownIcon = Icons.grid_view_rounded;
+    if (provider.viewMode == 'split') {
+      dropdownLabel = 'स्प्लिट व्यू (Split View)';
+      dropdownIcon = Icons.view_column_rounded;
+    } else if (provider.viewMode == 'preview') {
+      dropdownLabel = 'A4 बिल देखें (Preview)';
+      dropdownIcon = Icons.receipt_long_rounded;
+    } else if (provider.viewMode == 'receipts') {
+      dropdownLabel = 'रसीद (Receipts)';
+      dropdownIcon = Icons.receipt_rounded;
+    } else if (provider.viewMode == 'purchases') {
+      dropdownLabel = 'खरीद बिल (Purchases)';
+      dropdownIcon = Icons.shopping_bag_rounded;
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      height: 60,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1.2)),
@@ -181,136 +225,210 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       child: SafeArea(
         bottom: false,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          physics: const ClampingScrollPhysics(),
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: MediaQuery.of(context).size.width > 32
-                  ? MediaQuery.of(context).size.width - 32
-                  : 0,
-            ),
-            child: Row(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isCompact = constraints.maxWidth < 1040;
+            final isVeryCompact = constraints.maxWidth < 860;
+
+            return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // 1. LEFT: All 4 Main Navigation Tabs
-                Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                // 1. LEFT SECTION: Primary Tabs + Dropdown Menu
+                Flexible(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      // Tab 1: डैशबोर्ड (All Bills)
                       _buildTopNavItem(
                         icon: Icons.dashboard_rounded,
-                        label: 'डैशबोर्ड (All Bills)',
+                        label: isCompact ? 'डैशबोर्ड' : 'डैशबोर्ड (All Bills)',
                         isSelected: provider.viewMode == 'records',
-                        badgeCount: provider.savedInvoices.isNotEmpty ? provider.savedInvoices.length : null,
+                        badgeCount: provider.savedInvoices.isNotEmpty
+                            ? provider.savedInvoices.length
+                            : null,
                         onTap: () => provider.setViewMode('records'),
                       ),
+                      const SizedBox(width: 6),
+
+                      // Tab 2: बिल बनाएं (Form)
                       _buildTopNavItem(
                         icon: Icons.edit_note_rounded,
-                        label: 'बिल बनाएं (Form)',
+                        label: isCompact ? 'बिल बनाएं' : 'बिल बनाएं (Form)',
                         isSelected: provider.viewMode == 'form',
                         onTap: () => provider.setViewMode('form'),
                       ),
-                      _buildTopNavItem(
-                        icon: Icons.view_column_rounded,
-                        label: 'स्प्लिट व्यू (Split View)',
-                        isSelected: provider.viewMode == 'split',
-                        onTap: () => provider.setViewMode('split'),
-                      ),
-                      _buildTopNavItem(
-                        icon: Icons.receipt_long_rounded,
-                        label: 'A4 बिल देखें (Preview)',
-                        isSelected: provider.viewMode == 'preview',
-                        onTap: () => provider.setViewMode('preview'),
+                      const SizedBox(width: 6),
+
+                      // Dropdown Menu: मेनू / Views ▼
+                      PopupMenuButton<String>(
+                        tooltip: 'अन्य विकल्प (More Views & Tools)',
+                        offset: const Offset(0, 44),
+                        elevation: 6,
+                        color: Colors.white,
+                        surfaceTintColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(color: Color(0xFFE2E8F0)),
+                        ),
+                        onSelected: (value) {
+                          switch (value) {
+                            case 'split':
+                            case 'preview':
+                            case 'receipts':
+                            case 'purchases':
+                              provider.setViewMode(value);
+                              break;
+                            case 'add_customer':
+                              provider.resetToNew();
+                              provider.setViewMode('form');
+                              break;
+                            case 'settings':
+                              AppSettingsDialog.show(context);
+                              break;
+                          }
+                        },
+                        itemBuilder: (ctx) => [
+                          _buildDropdownItem(
+                            value: 'split',
+                            icon: Icons.view_column_rounded,
+                            label: 'स्प्लिट व्यू (Split View)',
+                            isSelected: provider.viewMode == 'split',
+                          ),
+                          _buildDropdownItem(
+                            value: 'preview',
+                            icon: Icons.receipt_long_rounded,
+                            label: 'A4 बिल देखें (Preview)',
+                            isSelected: provider.viewMode == 'preview',
+                          ),
+                          _buildDropdownItem(
+                            value: 'receipts',
+                            icon: Icons.receipt_rounded,
+                            label: 'रसीद (Receipts)',
+                            isSelected: provider.viewMode == 'receipts',
+                            badgeCount: receiptsCount > 0 ? receiptsCount : null,
+                          ),
+                          _buildDropdownItem(
+                            value: 'purchases',
+                            icon: Icons.shopping_bag_rounded,
+                            label: 'खरीद बिल (Purchases)',
+                            isSelected: provider.viewMode == 'purchases',
+                            badgeCount: purchasesCount > 0 ? purchasesCount : null,
+                          ),
+                          const PopupMenuDivider(height: 8),
+                          const PopupMenuItem<String>(
+                            value: 'add_customer',
+                            height: 40,
+                            child: Row(
+                              children: [
+                                Icon(Icons.person_add_rounded, size: 17, color: Color(0xFF00A86B)),
+                                SizedBox(width: 10),
+                                Text(
+                                  '+ नया ग्राहक (Add Customer)',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w700,
+                                    color: Color(0xFF00A86B),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'settings',
+                            height: 40,
+                            child: Row(
+                              children: [
+                                Icon(Icons.settings_outlined, size: 17, color: Color(0xFF475569)),
+                                SizedBox(width: 10),
+                                Text(
+                                  'सेटिंग्स (v${UpdateConfig.currentVersion})',
+                                  style: TextStyle(
+                                    fontSize: 12.5,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF334155),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: isDropdownViewActive
+                                ? Colors.green.shade50
+                                : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: isDropdownViewActive
+                                  ? const Color(0xFF00A86B)
+                                  : const Color(0xFFE2E8F0),
+                              width: isDropdownViewActive ? 1.2 : 1.0,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                dropdownIcon,
+                                size: 15,
+                                color: isDropdownViewActive
+                                    ? Colors.green.shade800
+                                    : const Color(0xFF475569),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                dropdownLabel,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: isDropdownViewActive
+                                      ? FontWeight.w800
+                                      : FontWeight.w600,
+                                  color: isDropdownViewActive
+                                      ? Colors.green.shade800
+                                      : const Color(0xFF334155),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              Icon(
+                                Icons.keyboard_arrow_down_rounded,
+                                size: 17,
+                                color: isDropdownViewActive
+                                    ? Colors.green.shade800
+                                    : const Color(0xFF64748B),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
 
-                const SizedBox(width: 16),
+                const SizedBox(width: 10),
 
-                // 2. RIGHT: Actions (All Options Directly Visible)
+                // 2. RIGHT SECTION: Compact Status Pill + Save Bill + Print / PDF
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // + New Customer button
-                    InkWell(
-                      onTap: () {
-                        provider.resetToNew();
-                        provider.setViewMode('form');
-                      },
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFE8F5EE),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.person_add_rounded, size: 14, color: Color(0xFF00A86B)),
-                            SizedBox(width: 5),
-                            Text(
-                              '+ नया ग्राहक',
-                              style: TextStyle(
-                                fontSize: 11.5,
-                                fontWeight: FontWeight.w700,
-                                color: Color(0xFF00A86B),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-
-                    // Date Chip
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF8FAFC),
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(color: const Color(0xFFE2E8F0)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.calendar_today_rounded, size: 12, color: Color(0xFF64748B)),
-                          const SizedBox(width: 5),
-                          Text(
-                            formattedDate,
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF334155),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-
-                    // Cloud / Offline Sync Status Chip
+                    // Synced Status Pill
                     InkWell(
                       onTap: (provider.isLoading || provider.isSyncing)
                           ? null
                           : () => provider.refreshInvoices(),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(20),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: isVeryCompact ? 8 : 10,
+                          vertical: 6,
+                        ),
                         decoration: BoxDecoration(
                           color: provider.pendingSyncCount > 0
                               ? const Color(0xFFFEF3C7)
                               : (provider.isFirebaseConfigured
-                                  ? const Color(0xFFECFDF5)
+                                  ? Colors.green.shade50
                                   : const Color(0xFFF1F5F9)),
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: provider.pendingSyncCount > 0
                                 ? const Color(0xFFFCD34D)
@@ -324,9 +442,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             if (provider.isSyncing)
                               const SizedBox(
-                                width: 11,
-                                height: 11,
-                                child: CircularProgressIndicator(strokeWidth: 1.8, color: Color(0xFF00A86B)),
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 1.8,
+                                  color: Color(0xFF00A86B),
+                                ),
                               )
                             else
                               Icon(
@@ -335,97 +456,141 @@ class _HomeScreenState extends State<HomeScreen> {
                                     : (provider.isFirebaseConfigured
                                         ? Icons.cloud_done_rounded
                                         : Icons.storage_rounded),
-                                size: 12.5,
+                                size: 13.5,
                                 color: provider.pendingSyncCount > 0
                                     ? const Color(0xFFD97706)
                                     : (provider.isFirebaseConfigured
                                         ? const Color(0xFF059669)
                                         : const Color(0xFF64748B)),
                               ),
-                            const SizedBox(width: 4),
-                            Text(
-                              provider.isSyncing
-                                  ? 'Syncing...'
-                                  : (provider.pendingSyncCount > 0
-                                      ? '${provider.pendingSyncCount} Offline'
-                                      : (provider.isFirebaseConfigured ? 'Synced' : 'Offline')),
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: provider.pendingSyncCount > 0
-                                    ? const Color(0xFFB45309)
-                                    : (provider.isFirebaseConfigured
-                                        ? const Color(0xFF059669)
-                                        : const Color(0xFF64748B)),
+                            if (!isVeryCompact) ...[
+                              const SizedBox(width: 5),
+                              Text(
+                                provider.isSyncing
+                                    ? 'Syncing...'
+                                    : (provider.pendingSyncCount > 0
+                                        ? '${provider.pendingSyncCount} Offline'
+                                        : (provider.isFirebaseConfigured ? 'Synced' : 'Offline')),
+                                style: TextStyle(
+                                  fontSize: 11.5,
+                                  fontWeight: FontWeight.w700,
+                                  color: provider.pendingSyncCount > 0
+                                      ? const Color(0xFFB45309)
+                                      : (provider.isFirebaseConfigured
+                                          ? const Color(0xFF059669)
+                                          : const Color(0xFF64748B)),
+                                ),
                               ),
-                            ),
+                            ],
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
 
-                    // Settings & Software Update Button in Navbar
-                    InkWell(
-                      onTap: () => AppSettingsDialog.show(context),
-                      borderRadius: BorderRadius.circular(8),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF1F5F9),
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: const Color(0xFFCBD5E1)),
-                        ),
-                        child: const Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.settings_outlined, size: 14, color: Color(0xFF334155)),
-                            SizedBox(width: 5),
-                            Text(
-                              'सेटिंग्स (v${UpdateConfig.currentVersion})',
-                              style: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF334155),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-
-                    // Save Bill Button
+                    // Save Bill Button (Emerald Green)
                     ElevatedButton.icon(
                       onPressed: () => _handleSave(context, provider),
-                      icon: const Icon(Icons.save_rounded, size: 14, color: Colors.white),
-                      label: const Text('Save Bill', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+                      icon: const Icon(Icons.save_rounded, size: 15, color: Colors.white),
+                      label: Text(
+                        isVeryCompact ? 'Save' : 'Save Bill',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00A86B),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        minimumSize: const Size(0, 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                        minimumSize: const Size(0, 34),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
                     const SizedBox(width: 8),
 
-                    // Print / PDF Button
+                    // Print / PDF Button (Dark Slate)
                     ElevatedButton.icon(
                       onPressed: () => _handlePrint(context, invoice),
-                      icon: const Icon(Icons.print_rounded, size: 14, color: Colors.white),
-                      label: const Text('Print / PDF', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white)),
+                      icon: const Icon(Icons.print_rounded, size: 15, color: Colors.white),
+                      label: Text(
+                        isVeryCompact ? 'PDF' : 'Print / PDF',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF0F172A),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        minimumSize: const Size(0, 32),
+                        padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                        minimumSize: const Size(0, 34),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),
                     ),
                   ],
                 ),
               ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  PopupMenuItem<String> _buildDropdownItem({
+    required String value,
+    required IconData icon,
+    required String label,
+    required bool isSelected,
+    int? badgeCount,
+  }) {
+    return PopupMenuItem<String>(
+      value: value,
+      height: 42,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.green.shade50 : Colors.transparent,
+          borderRadius: BorderRadius.circular(7),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              size: 17,
+              color: isSelected ? Colors.green.shade800 : const Color(0xFF475569),
             ),
-          ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
+                  color: isSelected ? Colors.green.shade800 : const Color(0xFF0F172A),
+                ),
+              ),
+            ),
+            if (badgeCount != null) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
+                decoration: BoxDecoration(
+                  color: isSelected ? const Color(0xFF00A86B) : const Color(0xFFE8F5EE),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '$badgeCount',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: isSelected ? Colors.white : const Color(0xFF00A86B),
+                  ),
+                ),
+              ),
+            ],
+          ],
         ),
       ),
     );
@@ -440,53 +605,48 @@ class _HomeScreenState extends State<HomeScreen> {
   }) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(7),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(7),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ]
-              : null,
+          color: isSelected ? Colors.green.shade50 : Colors.transparent,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: isSelected ? const Color(0xFF00A86B) : Colors.transparent,
+            width: 1.1,
+          ),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               icon,
-              size: 14,
-              color: isSelected ? const Color(0xFF00A86B) : const Color(0xFF64748B),
+              size: 15,
+              color: isSelected ? Colors.green.shade800 : const Color(0xFF64748B),
             ),
-            const SizedBox(width: 5),
+            const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
-                fontSize: 11.5,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? const Color(0xFF00A86B) : const Color(0xFF475569),
+                color: isSelected ? Colors.green.shade800 : const Color(0xFF475569),
               ),
             ),
             if (badgeCount != null) ...[
-              const SizedBox(width: 5),
+              const SizedBox(width: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFFE8F5EE) : const Color(0xFFE2E8F0),
-                  borderRadius: BorderRadius.circular(8),
+                  color: isSelected ? const Color(0xFF00A86B) : const Color(0xFFE2E8F0),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
                   '$badgeCount',
                   style: TextStyle(
-                    fontSize: 9.5,
+                    fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: isSelected ? const Color(0xFF00A86B) : const Color(0xFF475569),
+                    color: isSelected ? Colors.white : const Color(0xFF475569),
                   ),
                 ),
               ),
@@ -653,6 +813,12 @@ class _HomeScreenState extends State<HomeScreen> {
           clipBehavior: Clip.antiAlias,
           child: const SavedBillsView(),
         );
+
+      case 'receipts':
+        return const ReceiptVoucherScreen();
+
+      case 'purchases':
+        return const PurchaseListScreen();
 
       case 'form':
         return Container(

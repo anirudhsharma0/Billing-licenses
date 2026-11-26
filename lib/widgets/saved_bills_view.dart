@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/receipt_provider.dart';
 import '../services/invoice_pdf_service.dart';
 import '../utils/number_to_words.dart';
 
@@ -509,6 +510,40 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                         backgroundColor: const Color(0xFF00A86B),
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         minimumSize: const Size(0, 28),
+                                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                        visualDensity: VisualDensity.compact,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 4),
+
+                                    // 1.5 Add Receipt Button (Pre-fills Customer & Amount)
+                                    OutlinedButton.icon(
+                                      onPressed: () {
+                                        context.read<ReceiptProvider>().prepareNewReceipt(
+                                              customerName: inv.buyer.name.isNotEmpty
+                                                  ? inv.buyer.name
+                                                  : inv.displayName,
+                                              amount: inv.grandTotal,
+                                              linkedInvoiceId: inv.id,
+                                              linkedInvoiceNo: inv.metadata.invoiceNo,
+                                              seller: inv.seller,
+                                            );
+                                        provider.setViewMode('receipts');
+                                      },
+                                      icon: const Icon(Icons.receipt_rounded, size: 13, color: Color(0xFF4F46E5)),
+                                      label: const Text(
+                                        'Add Receipt',
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: Color(0xFF4F46E5),
+                                        ),
+                                      ),
+                                      style: OutlinedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                        minimumSize: const Size(0, 28),
+                                        side: const BorderSide(color: Color(0xFFC7D2FE)),
+                                        backgroundColor: const Color(0xFFEEF2FF),
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                         visualDensity: VisualDensity.compact,
                                       ),

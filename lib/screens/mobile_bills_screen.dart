@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/invoice_model.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/receipt_provider.dart';
 import '../services/invoice_pdf_service.dart';
 import '../utils/number_to_words.dart';
 import '../widgets/invoice_preview_sheet.dart';
+import 'purchase_list_screen.dart';
+import 'receipt_voucher_screen.dart';
 
 class MobileBillsScreen extends StatefulWidget {
   const MobileBillsScreen({super.key});
@@ -77,6 +80,46 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => MobileBillViewerPage(invoice: invoice),
+      ),
+    );
+  }
+
+  void _openPurchasesPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Scaffold(
+          backgroundColor: const Color(0xFFF4F6F8),
+          appBar: AppBar(
+            title: const Text(
+              'खरीद बिल (Purchases)',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+            ),
+          ),
+          body: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: PurchaseListScreen(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _openReceiptsPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Scaffold(
+          backgroundColor: const Color(0xFFF4F6F8),
+          appBar: AppBar(
+            title: const Text(
+              'Receipt Vouchers (रसीद)',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+            ),
+          ),
+          body: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: ReceiptVoucherScreen(),
+          ),
+        ),
       ),
     );
   }
@@ -192,6 +235,22 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                             ),
                           ],
                         ),
+                      ),
+
+                      // Purchase Bills quick button
+                      IconButton(
+                        icon: const Icon(Icons.shopping_bag_rounded, size: 20, color: Color(0xFF00A86B)),
+                        tooltip: 'Purchase Bills',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () => _openPurchasesPage(context),
+                      ),
+
+                      // Receipts Voucher quick button
+                      IconButton(
+                        icon: const Icon(Icons.receipt_rounded, size: 20, color: Color(0xFF4F46E5)),
+                        tooltip: 'Receipt Vouchers',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () => _openReceiptsPage(context),
                       ),
 
                       // Refresh / Sync Icon Button
@@ -540,37 +599,68 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
             ),
             const SizedBox(width: 8),
 
-            // 4. WhatsApp Share Icon (Bilkul Chota / Very Small: 30x30)
-            Tooltip(
-              message: 'WhatsApp पर शेयर करें',
-              child: InkWell(
-                onTap: isSharing ? null : () => _shareOnWhatsApp(inv),
-                borderRadius: BorderRadius.circular(7),
-                child: Container(
-                  width: 30,
-                  height: 30,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF25D366),
-                    borderRadius: BorderRadius.circular(7),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF25D366).withValues(alpha: 0.3),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
+            // 4. Compact Action Column: WhatsApp Share + Add Receipt (Zero horizontal overflow)
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Tooltip(
+                  message: 'WhatsApp पर शेयर करें',
+                  child: InkWell(
+                    onTap: isSharing ? null : () => _shareOnWhatsApp(inv),
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      width: 28,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF25D366),
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                    ],
-                  ),
-                  child: Center(
-                    child: isSharing
-                        ? const SizedBox(
-                            width: 12,
-                            height: 12,
-                            child: CircularProgressIndicator(strokeWidth: 1.8, color: Colors.white),
-                          )
-                        : const Icon(Icons.share_rounded, size: 15, color: Colors.white),
+                      child: Center(
+                        child: isSharing
+                            ? const SizedBox(
+                                width: 11,
+                                height: 11,
+                                child: CircularProgressIndicator(strokeWidth: 1.8, color: Colors.white),
+                              )
+                            : const Icon(Icons.share_rounded, size: 13, color: Colors.white),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 4),
+                Tooltip(
+                  message: 'Add Receipt (रसीद बनाएं)',
+                  child: InkWell(
+                    onTap: () {
+                      context.read<ReceiptProvider>().prepareNewReceipt(
+                            customerName: customerName,
+                            amount: inv.grandTotal,
+                            linkedInvoiceId: inv.id,
+                            linkedInvoiceNo: inv.metadata.invoiceNo,
+                            seller: inv.seller,
+                          );
+                      _openReceiptsPage(context);
+                    },
+                    borderRadius: BorderRadius.circular(6),
+                    child: Container(
+                      width: 28,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFEEF2FF),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: const Color(0xFFC7D2FE)),
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.receipt_rounded,
+                          size: 13,
+                          color: Color(0xFF4F46E5),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(width: 5),
 

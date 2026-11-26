@@ -1,9 +1,9 @@
 {
-  "version": "5.2",
+  "version": "5.3",
   "build_number": 1,
-  "release_date": "2026-10-04",
-  "windows_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.2/BillingApp_Setup_v5.2.exe",
-  "android_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.2/app-release.apk",
-  "release_notes": "1. Upgraded to Version 5.2\n2. Direct Settings & Support Dialog with Agency Contact\n3. Sleek compact bill dashboard & tamper-proof lock screen",
+  "release_date": "2026-11-26",
+  "windows_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.3/BillingApp_Setup_v5.3.exe",
+  "android_download_url": "https://github.com/anirudhsharma0/Billing-licenses/releases/download/v5.3/app-release.apk",
+  "release_notes": "1. Added Receipt Voucher module (Tally A4/A5 PDF + Firestore sync + Add Receipt from Saved Bills)\n2. Added Purchase Bills module with 24 Solar Items Catalog & compact spreadsheet table\n3. Upgraded Top Navbar to Bootstrap-style single-row menu with Dropdown\n4. Improved Google Sheet license verification & cache-busting",
   "mandatory": false
 }

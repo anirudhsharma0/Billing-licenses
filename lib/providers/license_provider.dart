@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import '../config/license_config.dart';
 import '../services/license_service.dart';
@@ -11,10 +12,15 @@ class LicenseProvider with ChangeNotifier {
   String? _clientName;
   DateTime? _lastChecked;
   final bool autoCheck;
+  Timer? _periodicCheckTimer;
 
   LicenseProvider({this.autoCheck = true}) {
     if (autoCheck) {
       initLicense();
+      _periodicCheckTimer = Timer.periodic(
+        const Duration(minutes: 2),
+        (_) => _silentRecheck(),
+      );
     } else {
       _isLoading = false;
       _isLicensed = true;
@@ -62,6 +68,28 @@ class LicenseProvider with ChangeNotifier {
     notifyListeners();
 
     return result;
+  }
+
+  /// Silent background re-check so if admin sets sheet to FALSE while app is open, it locks immediately
+  Future<void> _silentRecheck() async {
+    final result = await LicenseService.checkLicense();
+    final changed = _isLicensed != result.isLicensed ||
+        _isOffline != result.isOffline ||
+        _customMessage != result.customMessage;
+    _isLicensed = result.isLicensed;
+    _isOffline = result.isOffline;
+    _customMessage = result.customMessage;
+    _clientName = result.clientName;
+    _lastChecked = result.checkTime;
+    if (changed) {
+      notifyListeners();
+    }
+  }
+
+  @override
+  void dispose() {
+    _periodicCheckTimer?.cancel();
+    super.dispose();
   }
 
   /// Update Google Sheet URL (Admin/Developer configuration)
