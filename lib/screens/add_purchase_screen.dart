@@ -107,7 +107,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                 ? 'खरीद बिल सेव और Cloud Firestore पर सिंक हो गया!'
                 : 'खरीद बिल डिवाइस पर ऑफलाइन सेव हो गया।',
           ),
-          backgroundColor: const Color(0xFF00A86B),
+          backgroundColor: const Color(0xFFA0003A),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -127,12 +127,12 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
     final p = provider.currentPurchase;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F8),
+      backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF0F172A)),
+          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1A0A10)),
           onPressed: () {
             if (widget.onDone != null) {
               widget.onDone!();
@@ -146,14 +146,14 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
           style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w800,
-            color: Color(0xFF0F172A),
+            color: Color(0xFF1A0A10),
           ),
         ),
         actions: [
           OutlinedButton.icon(
             onPressed: () => PurchasePdfService.printOrSave(p, buyerFirm: buyerFirm),
-            icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF0F172A)),
-            label: const Text('Print / PDF', style: TextStyle(color: Color(0xFF0F172A))),
+            icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF1A0A10)),
+            label: const Text('Print / PDF', style: TextStyle(color: Color(0xFF1A0A10))),
           ),
           const SizedBox(width: 8),
           ElevatedButton.icon(
@@ -169,7 +169,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
               p.id != null ? 'अपडेट करें' : 'सेव करें',
               style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00A86B)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFA0003A)),
           ),
           const SizedBox(width: 14),
         ],
@@ -232,7 +232,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
           children: [
             const Row(
               children: [
-                Icon(Icons.store_rounded, size: 18, color: Color(0xFF00A86B)),
+                Icon(Icons.store_rounded, size: 18, color: Color(0xFFA0003A)),
                 SizedBox(width: 8),
                 Text(
                   'Supplier Details (विक्रेता विवरण)',
@@ -242,16 +242,16 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
             ),
             const SizedBox(height: 10),
             ActionChip(
-              avatar: const Icon(Icons.flash_on_rounded, size: 15, color: Color(0xFF00A86B)),
+              avatar: const Icon(Icons.flash_on_rounded, size: 15, color: Color(0xFFA0003A)),
               label: const Text(
                 'Fill: HAM SOLAR POWER PVT. LTD.',
                 style: TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF047857),
+                  color: Color(0xFF700028),
                 ),
               ),
-              backgroundColor: const Color(0xFFE8F5EE),
+              backgroundColor: const Color(0xFFFCE4EC),
               side: const BorderSide(color: Color(0xFFA7F3D0)),
               onPressed: () {
                 const preset = SolarPurchaseCatalog.hamSolarSupplier;
@@ -332,7 +332,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
           children: [
             const Row(
               children: [
-                Icon(Icons.receipt_long_rounded, size: 18, color: Color(0xFF00A86B)),
+                Icon(Icons.receipt_long_rounded, size: 18, color: Color(0xFFA0003A)),
                 SizedBox(width: 8),
                 Text(
                   'Invoice Metadata (बिल जानकारी)',
@@ -436,15 +436,15 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                             content: Text('सभी 24 Solar Items लोड हो गए! अब आप Qty और Rate एडिट कर सकते हैं।'),
-                            backgroundColor: Color(0xFF00A86B),
+                            backgroundColor: Color(0xFFA0003A),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       },
-                      icon: const Icon(Icons.playlist_add_check_rounded, size: 17, color: Color(0xFF4F46E5)),
+                      icon: const Icon(Icons.playlist_add_check_rounded, size: 17, color: Color(0xFFC2185B)),
                       label: const Text(
                         'Load All Solar Items (24)',
-                        style: TextStyle(color: Color(0xFF4F46E5), fontWeight: FontWeight.w700),
+                        style: TextStyle(color: Color(0xFFC2185B), fontWeight: FontWeight.w700),
                       ),
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: Color(0xFFC7D2FE)),
@@ -455,7 +455,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                       onPressed: () => provider.addItem(),
                       icon: const Icon(Icons.add_rounded, size: 16, color: Colors.white),
                       label: const Text('Add Item', style: TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF00A86B)),
+                      style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFA0003A)),
                     ),
                   ],
                 ),
@@ -476,7 +476,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                       Container(
                         height: 36,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8F5EE),
+                          color: const Color(0xFFFCE4EC),
                           border: Border(
                             bottom: BorderSide(color: Colors.grey.shade300),
                           ),
@@ -579,11 +579,11 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
               children: [
                 const Text(
                   'Grand Total',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
                 ),
                 Text(
                   NumberToWords.formatWithSymbol(p.grandTotal),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF00A86B)),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFFA0003A)),
                 ),
               ],
             ),
@@ -638,7 +638,7 @@ class _TableHeaderCell extends StatelessWidget {
         style: const TextStyle(
           fontSize: 11.5,
           fontWeight: FontWeight.w800,
-          color: Color(0xFF0F172A),
+          color: Color(0xFF1A0A10),
         ),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
@@ -760,7 +760,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                               '₹${c.rate.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
-                                color: Color(0xFF00A86B),
+                                color: Color(0xFFA0003A),
                               ),
                             ),
                             onTap: () => Navigator.of(ctx).pop(c),
@@ -800,7 +800,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
       enabledBorder: InputBorder.none,
       focusedBorder: const OutlineInputBorder(
         borderRadius: BorderRadius.zero,
-        borderSide: BorderSide(color: Color(0xFF00A86B), width: 1.4),
+        borderSide: BorderSide(color: Color(0xFFA0003A), width: 1.4),
       ),
     );
   }
@@ -878,7 +878,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                         hintText: 'Item name / search...',
                         suffixIcon: IconButton(
                           tooltip: 'Select from Catalog',
-                          icon: const Icon(Icons.list_alt_rounded, size: 16, color: Color(0xFF4F46E5)),
+                          icon: const Icon(Icons.list_alt_rounded, size: 16, color: Color(0xFFC2185B)),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints.tightFor(width: 26, height: 26),
                           onPressed: _openCatalogPicker,
@@ -917,7 +917,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                                   '₹${opt.rate.toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w800,
-                                    color: Color(0xFF00A86B),
+                                    color: Color(0xFFA0003A),
                                     fontSize: 11.5,
                                   ),
                                 ),
@@ -980,7 +980,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                 initialValue: unitValue,
                 isDense: true,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 11.5, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+                style: const TextStyle(fontSize: 11.5, color: Color(0xFF1A0A10), fontWeight: FontWeight.w600),
                 decoration: _cellDecoration(),
                 items: PurchaseItem.allowedUnits
                     .map((u) => DropdownMenuItem(value: u, child: Text(u)))
@@ -1023,7 +1023,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                 initialValue: gstValue,
                 isDense: true,
                 isExpanded: true,
-                style: const TextStyle(fontSize: 11.5, color: Color(0xFF0F172A), fontWeight: FontWeight.w600),
+                style: const TextStyle(fontSize: 11.5, color: Color(0xFF1A0A10), fontWeight: FontWeight.w600),
                 decoration: _cellDecoration(),
                 items: PurchaseItem.allowedGstRates
                     .map((g) => DropdownMenuItem(
@@ -1050,7 +1050,7 @@ class _PurchaseItemEditorRowState extends State<_PurchaseItemEditorRow> {
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: Color(0xFF1A0A10),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,

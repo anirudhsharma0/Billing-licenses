@@ -12,7 +12,7 @@ class LicenseLockScreen extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$label कॉपी हो गया: $text'),
-        backgroundColor: const Color(0xFF00A86B),
+        backgroundColor: const Color(0xFFA0003A),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
@@ -24,7 +24,7 @@ class LicenseLockScreen extends StatelessWidget {
     final license = context.watch<LicenseProvider>();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color(0xFF1A0A10),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -109,7 +109,7 @@ class LicenseLockScreen extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                       decoration: BoxDecoration(
-                        color: const Color(0xFF0F172A),
+                        color: const Color(0xFF1A0A10),
                         borderRadius: BorderRadius.circular(16),
                         border: Border.all(
                           color: const Color(0xFF334155),
@@ -240,7 +240,7 @@ class LicenseLockScreen extends StatelessWidget {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00A86B),
+                          backgroundColor: const Color(0xFFA0003A),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

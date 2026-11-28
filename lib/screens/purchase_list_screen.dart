@@ -53,7 +53,7 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
       decoration: BoxDecoration(
         color: const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE5EAE8)),
+        border: Border.all(color: const Color(0xFFF5D0DC)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -71,14 +71,14 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                     title: 'Total Purchase Amount',
                     value: NumberToWords.formatWithSymbol(provider.totalPurchaseAmount),
                     icon: Icons.shopping_bag_outlined,
-                    iconColor: const Color(0xFF00A86B),
-                    bgColor: const Color(0xFFE8F5EE),
+                    iconColor: const Color(0xFFA0003A),
+                    bgColor: const Color(0xFFFCE4EC),
                   ),
                   _KpiCard(
                     title: 'Total Input GST',
                     value: NumberToWords.formatWithSymbol(provider.totalInputGst),
                     icon: Icons.account_balance_wallet_outlined,
-                    iconColor: const Color(0xFF4F46E5),
+                    iconColor: const Color(0xFFC2185B),
                     bgColor: const Color(0xFFEEF2FF),
                   ),
                   _KpiCard(
@@ -136,7 +136,7 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                     controller: _searchController,
                     decoration: InputDecoration(
                       hintText: 'खरीद बिल खोजें (Supplier Name, Invoice No., Date)...',
-                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF00A86B)),
+                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFFA0003A)),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear_rounded, size: 18),
@@ -174,7 +174,7 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00A86B),
+                    backgroundColor: const Color(0xFFA0003A),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   ),
                 ),
@@ -277,7 +277,7 @@ class _KpiCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE5EAE8)),
+        border: Border.all(color: const Color(0xFFF5D0DC)),
       ),
       child: Row(
         children: [
@@ -299,7 +299,7 @@ class _KpiCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   value,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -340,14 +340,14 @@ class _PurchaseBillCard extends StatelessWidget {
             width: 38,
             height: 38,
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F5EE),
+              color: const Color(0xFFFCE4EC),
               borderRadius: BorderRadius.circular(9),
             ),
             alignment: Alignment.center,
             child: Text(
               purchase.displayName.isNotEmpty ? purchase.displayName[0].toUpperCase() : 'P',
               style: const TextStyle(
-                color: Color(0xFF00A86B),
+                color: Color(0xFFA0003A),
                 fontWeight: FontWeight.w800,
                 fontSize: 15,
               ),
@@ -363,7 +363,7 @@ class _PurchaseBillCard extends StatelessWidget {
                     Flexible(
                       child: Text(
                         purchase.displayName,
-                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFF0F172A)),
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 14, color: Color(0xFF1A0A10)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -372,7 +372,7 @@ class _PurchaseBillCard extends StatelessWidget {
                     Icon(
                       purchase.isSynced ? Icons.cloud_done_rounded : Icons.cloud_queue_rounded,
                       size: 13,
-                      color: purchase.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
+                      color: purchase.isSynced ? const Color(0xFF880E4F) : const Color(0xFFD97706),
                     ),
                   ],
                 ),
@@ -392,7 +392,7 @@ class _PurchaseBillCard extends StatelessWidget {
             children: [
               Text(
                 NumberToWords.formatWithSymbol(purchase.grandTotal),
-                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Color(0xFF0F172A)),
+                style: const TextStyle(fontWeight: FontWeight.w900, fontSize: 15, color: Color(0xFF1A0A10)),
               ),
               const SizedBox(height: 5),
               Row(
@@ -403,7 +403,7 @@ class _PurchaseBillCard extends StatelessWidget {
                     icon: const Icon(Icons.visibility_rounded, size: 13, color: Colors.white),
                     label: const Text('View / Print', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF00A86B),
+                      backgroundColor: const Color(0xFFA0003A),
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       minimumSize: const Size(0, 28),
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -479,7 +479,7 @@ class _PurchasePreviewPage extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF00A86B),
+              backgroundColor: const Color(0xFFA0003A),
             ),
           ),
           const SizedBox(width: 12),

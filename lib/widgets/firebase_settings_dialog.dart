@@ -98,7 +98,7 @@ class _FirebaseSettingsDialogState extends State<FirebaseSettingsDialog> {
               ? 'Firebase Firestore credentials saved & synced!'
               : 'Using Local Storage Mode.',
         ),
-        backgroundColor: const Color(0xFF059669),
+        backgroundColor: const Color(0xFF880E4F),
         behavior: SnackBarBehavior.floating,
       ),
     );
@@ -122,7 +122,7 @@ class _FirebaseSettingsDialogState extends State<FirebaseSettingsDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                  colors: [Color(0xFF1A0A10), Color(0xFF1E293B)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -372,7 +372,7 @@ class _FirebaseSettingsDialogState extends State<FirebaseSettingsDialog> {
                   ElevatedButton(
                     onPressed: _saveConfig,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F172A),
+                      backgroundColor: const Color(0xFF1A0A10),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     ),

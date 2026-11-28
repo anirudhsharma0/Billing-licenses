@@ -116,11 +116,11 @@ class _UpdateDialogState extends State<UpdateDialog> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00A86B).withValues(alpha: 0.12),
+                    color: const Color(0xFFA0003A).withValues(alpha: 0.12),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Center(
-                    child: Icon(Icons.system_update_rounded, color: Color(0xFF00A86B), size: 24),
+                    child: Icon(Icons.system_update_rounded, color: Color(0xFFA0003A), size: 24),
                   ),
                 ),
                 const SizedBox(width: 14),
@@ -130,7 +130,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     children: [
                       Text(
                         'सॉफ्टवेयर अपडेट',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF0F172A)),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800, color: Color(0xFF1A0A10)),
                       ),
                       Text(
                         'Billing App Software Update',
@@ -157,7 +157,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     SizedBox(
                       width: 28,
                       height: 28,
-                      child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFF00A86B)),
+                      child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFFA0003A)),
                     ),
                     SizedBox(height: 14),
                     Text(
@@ -299,7 +299,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     LinearProgressIndicator(
                       value: _downloadProgress > 0 ? _downloadProgress : null,
                       backgroundColor: const Color(0xFFE2E8F0),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF00A86B)),
+                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFA0003A)),
                       minHeight: 8,
                       borderRadius: BorderRadius.circular(4),
                     ),
@@ -307,7 +307,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     Text(
                       _downloadStatusText,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF00A86B)),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFFA0003A)),
                     ),
                     const SizedBox(height: 14),
                   ],
@@ -351,7 +351,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                         style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00A86B),
+                        backgroundColor: const Color(0xFFA0003A),
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
@@ -360,7 +360,7 @@ class _UpdateDialogState extends State<UpdateDialog> {
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0F172A),
+                        backgroundColor: const Color(0xFF1A0A10),
                         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                       ),

@@ -20,7 +20,7 @@ class AppSettingsDialog extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$label कॉपी हो गया: $text'),
-        backgroundColor: const Color(0xFF00A86B),
+        backgroundColor: const Color(0xFFA0003A),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
       ),
@@ -47,13 +47,13 @@ class AppSettingsDialog extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0F172A).withValues(alpha: 0.06),
+                      color: const Color(0xFF1A0A10).withValues(alpha: 0.06),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.tune_rounded,
                       size: 22,
-                      color: Color(0xFF0F172A),
+                      color: Color(0xFF1A0A10),
                     ),
                   ),
                   const SizedBox(width: 14),
@@ -66,7 +66,7 @@ class AppSettingsDialog extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF0F172A),
+                            color: Color(0xFF1A0A10),
                           ),
                         ),
                         SizedBox(height: 2),
@@ -114,13 +114,13 @@ class AppSettingsDialog extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00A86B).withValues(alpha: 0.12),
+                                  color: const Color(0xFFA0003A).withValues(alpha: 0.12),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: const Icon(
                                   Icons.system_update_rounded,
                                   size: 18,
-                                  color: Color(0xFF00A86B),
+                                  color: Color(0xFFA0003A),
                                 ),
                               ),
                               const SizedBox(width: 10),
@@ -133,7 +133,7 @@ class AppSettingsDialog extends StatelessWidget {
                                       style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w700,
-                                        color: Color(0xFF0F172A),
+                                        color: Color(0xFF1A0A10),
                                       ),
                                     ),
                                     Text(
@@ -146,7 +146,7 @@ class AppSettingsDialog extends StatelessWidget {
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF00A86B),
+                                  color: const Color(0xFFA0003A),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: const Text(
@@ -177,7 +177,7 @@ class AppSettingsDialog extends StatelessWidget {
                               style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: Colors.white),
                             ),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF00A86B),
+                              backgroundColor: const Color(0xFFA0003A),
                               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
@@ -193,7 +193,7 @@ class AppSettingsDialog extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFF0F172A), // Dark slate
+                            Color(0xFF1A0A10), // Dark slate
                             Color(0xFF1E293B),
                             Color(0xFF1E1B4B), // Deep indigo
                           ],

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/invoice_model.dart';
+import '../models/stock_model.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/purchase_provider.dart';
+import '../providers/stock_provider.dart';
 import '../utils/number_to_words.dart';
 import 'save_invoice_dialog.dart';
 
@@ -67,9 +70,9 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             child: TabBar(
               controller: _tabController,
               isScrollable: false,
-              labelColor: const Color(0xFF00A86B),
+              labelColor: const Color(0xFFA0003A),
               unselectedLabelColor: const Color(0xFF64748B),
-              indicatorColor: const Color(0xFF00A86B),
+              indicatorColor: const Color(0xFFA0003A),
               indicatorWeight: 3.5,
               indicatorSize: TabBarIndicatorSize.tab,
               labelStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
@@ -132,7 +135,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               _buildCardHeader(
                 icon: isTax ? Icons.receipt_long_rounded : Icons.description_outlined,
-                iconColor: isTax ? const Color(0xFF00A86B) : const Color(0xFF4F46E5),
+                iconColor: isTax ? const Color(0xFFA0003A) : const Color(0xFFC2185B),
                 title: 'बिल का प्रकार (Invoice Document Type)',
                 subtitle: isTax
                     ? 'पक्का जीएसटी बिल (TAX INVOICE - GST Compliant)'
@@ -141,8 +144,8 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                   style: SegmentedButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    selectedBackgroundColor: isTax ? const Color(0xFFE8F5EE) : const Color(0xFFEEF2FF),
-                    selectedForegroundColor: isTax ? const Color(0xFF00A86B) : const Color(0xFF4F46E5),
+                    selectedBackgroundColor: isTax ? const Color(0xFFFCE4EC) : const Color(0xFFEEF2FF),
+                    selectedForegroundColor: isTax ? const Color(0xFFA0003A) : const Color(0xFFC2185B),
                   ),
                   segments: const [
                     ButtonSegment(
@@ -170,7 +173,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.lightbulb_outline_rounded, size: 16, color: Color(0xFF00A86B)),
+                    const Icon(Icons.lightbulb_outline_rounded, size: 16, color: Color(0xFFA0003A)),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -193,21 +196,21 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               _buildCardHeader(
                 icon: Icons.person_pin_rounded,
-                iconColor: const Color(0xFF00A86B),
+                iconColor: const Color(0xFFA0003A),
                 title: 'ग्राहक का विवरण (Customer / Buyer Details)',
                 subtitle: 'बिल प्राप्तकर्ता का नाम, पूरा पता और राज्य दर्ज करें',
                 trailing: invoice.buyer.name.trim().isNotEmpty
                     ? Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8F5EE),
+                          color: const Color(0xFFFCE4EC),
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFF00A86B).withValues(alpha: 0.3)),
+                          border: Border.all(color: const Color(0xFFA0003A).withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFF00A86B)),
+                            const Icon(Icons.check_circle_rounded, size: 13, color: Color(0xFFA0003A)),
                             const SizedBox(width: 5),
                             ConstrainedBox(
                               constraints: const BoxConstraints(maxWidth: 160),
@@ -216,7 +219,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                                 style: const TextStyle(
                                   fontSize: 11.5,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF00A86B),
+                                  color: Color(0xFFA0003A),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -333,7 +336,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               Checkbox(
                 value: _sameAsBuyer,
-                activeColor: const Color(0xFF00A86B),
+                activeColor: const Color(0xFFA0003A),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
                 onChanged: (val) {
                   setState(() {
@@ -373,7 +376,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                           : 'अलग डिलीवरी पता भरने के लिए नीचे फ़ील्ड्स उपलब्ध हैं',
                         style: TextStyle(
                           fontSize: 11.5,
-                          color: _sameAsBuyer ? const Color(0xFF00A86B) : const Color(0xFF64748B),
+                          color: _sameAsBuyer ? const Color(0xFFA0003A) : const Color(0xFF64748B),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -477,7 +480,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
               style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0F172A),
+              backgroundColor: const Color(0xFF1A0A10),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -493,6 +496,16 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
   // TAB 2: ITEMS & PRICING (Form View)
   // ---------------------------------------------------------------------------
   Widget _buildItemsTab(BuildContext context, InvoiceProvider provider, Invoice invoice) {
+    final stockProvider = context.watch<StockProvider>();
+    final purchaseProvider = context.watch<PurchaseProvider>();
+    final stockMap = {
+      for (final s in stockProvider.buildStockSummary(
+        purchases: purchaseProvider.savedPurchases,
+        invoices: provider.savedInvoices,
+        includeCatalogDefaults: false,
+      ))
+        s.itemKey: s
+    };
     return ListView(
       padding: const EdgeInsets.all(20),
       children: [
@@ -501,7 +514,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
           padding: const EdgeInsets.all(18),
           child: _buildCardHeader(
             icon: Icons.inventory_2_rounded,
-            iconColor: const Color(0xFF00A86B),
+            iconColor: const Color(0xFFA0003A),
             title: 'बिल किए जाने वाले सामान (Bill Line Items)',
             subtitle: 'सोलर पैनल, मोटर पंप, स्ट्रक्चर व इंस्टॉलेशन दरें',
             trailing: ElevatedButton.icon(
@@ -509,7 +522,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
               icon: const Icon(Icons.add_rounded, size: 16),
               label: const Text('सामान जोड़ें (+ Item)', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00A86B),
+                backgroundColor: const Color(0xFFA0003A),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -534,16 +547,16 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F5EE),
+                        color: const Color(0xFFFCE4EC),
                         borderRadius: BorderRadius.circular(6),
-                        border: Border.all(color: const Color(0xFF00A86B).withValues(alpha: 0.3)),
+                        border: Border.all(color: const Color(0xFFA0003A).withValues(alpha: 0.3)),
                       ),
                       child: Text(
                         'आइटम #${idx + 1}',
                         style: const TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w800,
-                          color: Color(0xFF00A86B),
+                          color: Color(0xFFA0003A),
                           letterSpacing: 0.5,
                         ),
                       ),
@@ -555,7 +568,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 14,
-                          color: Color(0xFF0F172A),
+                          color: Color(0xFF1A0A10),
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -592,7 +605,62 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                     provider.updateItem(idx, item.copyWith(description: val));
                   },
                 ),
-                const SizedBox(height: 14),
+                const SizedBox(height: 6),
+                // ── Live Stock Availability Chip ──────────────────────────
+                if (item.description.trim().isNotEmpty)
+                  Builder(builder: (ctx) {
+                    final key = StockAdjustment.normalizeKey(item.description);
+                    final stock = stockMap[key];
+                    if (stock == null) return const SizedBox.shrink();
+                    final available = stock.availableQty;
+                    final isOut = available <= 0;
+                    final isLow = available > 0 && available <= 5;
+                    final color = isOut
+                        ? const Color(0xFFDC2626)
+                        : isLow
+                            ? const Color(0xFFD97706)
+                            : const Color(0xFF880E4F);
+                    final bg = isOut
+                        ? const Color(0xFFFEE2E2)
+                        : isLow
+                            ? const Color(0xFFFEF3C7)
+                            : const Color(0xFFD1FAE5);
+                    final qty = available == available.truncateToDouble()
+                        ? available.toInt().toString()
+                        : available.toStringAsFixed(2);
+                    final label = isOut
+                        ? '🔴 स्टॉक नहीं है!'
+                        : isLow
+                            ? '🟡 कम स्टॉक: $qty ${stock.unit} बचा'
+                            : '🟢 उपलब्ध: $qty ${stock.unit}';
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: bg,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: color.withValues(alpha: 0.3)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.inventory_2_outlined, size: 13, color: color),
+                            const SizedBox(width: 5),
+                            Text(
+                              label,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: color,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+                const SizedBox(height: 8),
 
                 // Subtext / Specifications
                 _buildTextField(
@@ -714,7 +782,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                         style: const TextStyle(
                           fontWeight: FontWeight.w800,
                           fontSize: 13.5,
-                          color: Color(0xFF0F172A),
+                          color: Color(0xFF1A0A10),
                         ),
                       ),
                     ],
@@ -735,7 +803,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text('राउंड ऑफ समायोजन (Round Off Adjustment)',
-                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5, color: Color(0xFF0F172A))),
+                        style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13.5, color: Color(0xFF1A0A10))),
                     const SizedBox(height: 3),
                     Text(
                       'स्वतः समायोजित: ${invoice.roundOff >= 0 ? "+" : ""}${invoice.roundOff.toStringAsFixed(2)}',
@@ -774,7 +842,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
               style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0F172A),
+              backgroundColor: const Color(0xFF1A0A10),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -801,7 +869,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               _buildCardHeader(
                 icon: Icons.tune_rounded,
-                iconColor: const Color(0xFF4F46E5),
+                iconColor: const Color(0xFFC2185B),
                 title: 'बिल की पहचान व प्रकार (Invoice Document Settings)',
                 subtitle: 'बिल नंबर, दिनांक व टैक्स मोड सेट करें',
               ),
@@ -1030,7 +1098,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
               style: TextStyle(fontSize: 13.5, fontWeight: FontWeight.w700),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0F172A),
+              backgroundColor: const Color(0xFF1A0A10),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -1057,7 +1125,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               _buildCardHeader(
                 icon: Icons.business_rounded,
-                iconColor: const Color(0xFF0F172A),
+                iconColor: const Color(0xFF1A0A10),
                 title: 'कंपनी / फर्म की जानकारी (Seller Company Information)',
                 subtitle: 'बिल जारी करने वाली संस्था का विवरण',
               ),
@@ -1175,7 +1243,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             children: [
               _buildCardHeader(
                 icon: Icons.account_balance_rounded,
-                iconColor: const Color(0xFF00A86B),
+                iconColor: const Color(0xFFA0003A),
                 title: 'सोसायटी बैंक खाता विवरण (Official Bank Settlement Details)',
                 subtitle: 'बिल पर प्रिंट होने वाले बैंक भुगतान विवरण',
               ),
@@ -1272,7 +1340,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
               style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF00A86B),
+              backgroundColor: const Color(0xFFA0003A),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 15),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -1325,7 +1393,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF0F172A),
+                    color: Color(0xFF1A0A10),
                   ),
                 ),
               ],
@@ -1335,11 +1403,11 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             // Next Customer quick button
             TextButton.icon(
               onPressed: () => provider.resetToNew(),
-              icon: const Icon(Icons.person_add_rounded, size: 16, color: Color(0xFF00A86B)),
-              label: const Text('+ Next Customer', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: Color(0xFF00A86B))),
+              icon: const Icon(Icons.person_add_rounded, size: 16, color: Color(0xFFA0003A)),
+              label: const Text('+ Next Customer', style: TextStyle(fontSize: 12.5, fontWeight: FontWeight.bold, color: Color(0xFFA0003A))),
               style: TextButton.styleFrom(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                backgroundColor: const Color(0xFFE8F5EE),
+                backgroundColor: const Color(0xFFFCE4EC),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
             ),
@@ -1368,14 +1436,14 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             Container(
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF00A86B), Color(0xFF059669)],
+                  colors: [Color(0xFFA0003A), Color(0xFF880E4F)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF00A86B).withValues(alpha: 0.35),
+                    color: const Color(0xFFA0003A).withValues(alpha: 0.35),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -1463,7 +1531,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF0F172A),
+                  color: Color(0xFF1A0A10),
                   letterSpacing: -0.3,
                 ),
               ),
@@ -1553,7 +1621,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
           style: const TextStyle(
             fontSize: 14.5,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: Color(0xFF1A0A10),
           ),
           decoration: InputDecoration(
             hintText: hintText,
@@ -1578,7 +1646,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF00A86B), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFA0003A), width: 2),
             ),
           ),
           onChanged: onChanged,
@@ -1606,7 +1674,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: Color(0xFF1A0A10),
           ),
           decoration: InputDecoration(
             isDense: false,
@@ -1623,7 +1691,7 @@ class _InvoiceFormPanelState extends State<InvoiceFormPanel>
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(color: Color(0xFF00A86B), width: 2),
+              borderSide: const BorderSide(color: Color(0xFFA0003A), width: 2),
             ),
           ),
         ),

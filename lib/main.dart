@@ -7,6 +7,7 @@ import 'providers/invoice_provider.dart';
 import 'providers/license_provider.dart';
 import 'providers/purchase_provider.dart';
 import 'providers/receipt_provider.dart';
+import 'providers/stock_provider.dart';
 import 'screens/home_screen.dart';
 import 'services/safe_http_client.dart';
 
@@ -23,25 +24,28 @@ class BillingApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Curated high-end color palette inspired by Oripio Fintech & Glassmorphic Mobile
-    const primaryEmerald = Color(0xFF00A86B);
-    const darkEmerald = Color(0xFF047857);
-    const deepCharcoal = Color(0xFF0F172A);
-    const accentIndigo = Color(0xFF4F46E5);
-    const softMintBg = Color(0xFFE8F5EE);
+    // Minimal High-Contrast (Print / Sunlight Friendly) color palette
+    const primaryContrast = Color(0xFF111827);
+    const secondaryContrast = Color(0xFF1F2937);
+    const accentSlate = Color(0xFF334155);
+    const deepInk = Color(0xFF030712);
+    const softHighlightBg = Color(0xFFE2E8F0);
     const surfaceWhite = Colors.white;
-    const scaffoldBg = Color(0xFFF4F6F8);
+    const scaffoldBg = Color(0xFFF8FAFC);
+    const crispBorder = Color(0xFFCBD5E1);
 
     final baseTextTheme = GoogleFonts.interTextTheme(Theme.of(context).textTheme);
     final outfitHeading = GoogleFonts.outfitTextTheme(Theme.of(context).textTheme);
 
     final mergedTextTheme = baseTextTheme.copyWith(
-      displayLarge: outfitHeading.displayLarge?.copyWith(fontWeight: FontWeight.w800, color: deepCharcoal),
-      displayMedium: outfitHeading.displayMedium?.copyWith(fontWeight: FontWeight.w700, color: deepCharcoal),
-      headlineMedium: outfitHeading.headlineMedium?.copyWith(fontWeight: FontWeight.w700, color: deepCharcoal),
-      headlineSmall: outfitHeading.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: deepCharcoal),
-      titleLarge: outfitHeading.titleLarge?.copyWith(fontWeight: FontWeight.w700, color: deepCharcoal),
-      titleMedium: outfitHeading.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: deepCharcoal),
+      displayLarge: outfitHeading.displayLarge?.copyWith(fontWeight: FontWeight.w800, color: deepInk),
+      displayMedium: outfitHeading.displayMedium?.copyWith(fontWeight: FontWeight.w700, color: deepInk),
+      headlineMedium: outfitHeading.headlineMedium?.copyWith(fontWeight: FontWeight.w700, color: deepInk),
+      headlineSmall: outfitHeading.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: deepInk),
+      titleLarge: outfitHeading.titleLarge?.copyWith(fontWeight: FontWeight.w700, color: deepInk),
+      titleMedium: outfitHeading.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: deepInk),
+      bodyLarge: baseTextTheme.bodyLarge?.copyWith(color: deepInk),
+      bodyMedium: baseTextTheme.bodyMedium?.copyWith(color: primaryContrast),
     );
 
     return MultiProvider(
@@ -50,6 +54,7 @@ class BillingApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => InvoiceProvider()),
         ChangeNotifierProvider(create: (_) => ReceiptProvider()),
         ChangeNotifierProvider(create: (_) => PurchaseProvider()),
+        ChangeNotifierProvider(create: (_) => StockProvider()),
       ],
       child: MaterialApp(
         title: 'The Kishan Bharti Coop. M.P. Society Ltd.',
@@ -57,18 +62,22 @@ class BillingApp extends StatelessWidget {
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
-            seedColor: primaryEmerald,
-            primary: primaryEmerald,
-            secondary: accentIndigo,
-            tertiary: darkEmerald,
+            seedColor: primaryContrast,
+            primary: primaryContrast,
+            onPrimary: Colors.white,
+            secondary: accentSlate,
+            onSecondary: Colors.white,
+            tertiary: secondaryContrast,
             surface: surfaceWhite,
+            onSurface: deepInk,
+            outline: crispBorder,
             brightness: Brightness.light,
           ),
           textTheme: mergedTextTheme,
           scaffoldBackgroundColor: scaffoldBg,
           appBarTheme: const AppBarTheme(
             backgroundColor: Colors.white,
-            foregroundColor: deepCharcoal,
+            foregroundColor: deepInk,
             elevation: 0,
             centerTitle: false,
             surfaceTintColor: Colors.transparent,
@@ -79,32 +88,34 @@ class BillingApp extends StatelessWidget {
             surfaceTintColor: Colors.transparent,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(16),
-              side: const BorderSide(color: Color(0xFFE5EAE8), width: 1.0),
+              side: const BorderSide(color: crispBorder, width: 1.2),
             ),
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true,
-            fillColor: const Color(0xFFF8FAFC),
+            fillColor: Colors.white,
             isDense: true,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-            labelStyle: const TextStyle(fontSize: 12.5, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
-            floatingLabelStyle: const TextStyle(color: primaryEmerald, fontWeight: FontWeight.w700, fontSize: 13),
-            hintStyle: const TextStyle(fontSize: 12.5, color: Color(0xFF94A3B8)),
+            labelStyle: const TextStyle(fontSize: 12.5, color: Color(0xFF334155), fontWeight: FontWeight.w600),
+            floatingLabelStyle: const TextStyle(color: primaryContrast, fontWeight: FontWeight.w700, fontSize: 13),
+            hintStyle: const TextStyle(fontSize: 12.5, color: Color(0xFF64748B)),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderSide: const BorderSide(color: crispBorder, width: 1.2),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              borderSide: const BorderSide(color: crispBorder, width: 1.2),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryEmerald, width: 1.8),
+              borderSide: const BorderSide(color: primaryContrast, width: 2.0),
             ),
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
+              backgroundColor: primaryContrast,
+              foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -113,10 +124,17 @@ class BillingApp extends StatelessWidget {
           ),
           outlinedButtonTheme: OutlinedButtonThemeData(
             style: OutlinedButton.styleFrom(
+              foregroundColor: primaryContrast,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-              side: const BorderSide(color: Color(0xFFCBD5E1)),
+              side: const BorderSide(color: Color(0xFF475569), width: 1.2),
               textStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+            ),
+          ),
+          textButtonTheme: TextButtonThemeData(
+            style: TextButton.styleFrom(
+              foregroundColor: primaryContrast,
+              textStyle: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
           segmentedButtonTheme: SegmentedButtonThemeData(
@@ -127,20 +145,23 @@ class BillingApp extends StatelessWidget {
               ),
               backgroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return softMintBg;
+                  return softHighlightBg;
                 }
                 return Colors.white;
               }),
               foregroundColor: WidgetStateProperty.resolveWith((states) {
                 if (states.contains(WidgetState.selected)) {
-                  return primaryEmerald;
+                  return primaryContrast;
                 }
-                return const Color(0xFF64748B);
+                return const Color(0xFF334155);
               }),
+              side: WidgetStateProperty.all(
+                const BorderSide(color: crispBorder, width: 1.0),
+              ),
             ),
           ),
           dividerTheme: const DividerThemeData(
-            color: Color(0xFFE5EAE8),
+            color: crispBorder,
             thickness: 1,
             space: 1,
           ),

@@ -2,7 +2,7 @@
 ; Generated for wisdomCareSolutions
 
 #define MyAppName "Billing Software"
-#define MyAppVersion "5.3"
+#define MyAppVersion "5.4"
 #define MyAppPublisher "wisdomCareSolutions"
 #define MyAppExeName "billing_app.exe"
 
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\BillingApp
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=build\installer
-OutputBaseFilename=BillingApp_Setup_v5.3
+OutputBaseFilename=BillingApp_Setup_v5.4
 SetupIconFile=windows\runner\resources\app_icon.ico
 Compression=lzma2/ultra64
 SolidCompression=yes

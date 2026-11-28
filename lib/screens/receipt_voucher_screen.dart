@@ -101,7 +101,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                 ? 'रसीद #${result.receipt.receiptNo} सेव और Cloud Firestore पर सिंक हो गई!'
                 : 'रसीद #${result.receipt.receiptNo} डिवाइस पर ऑफलाइन सेव हो गई।',
           ),
-          backgroundColor: const Color(0xFF00A86B),
+          backgroundColor: const Color(0xFFA0003A),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -136,7 +136,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE5EAE8)),
+        border: Border.all(color: const Color(0xFFF5D0DC)),
       ),
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -298,7 +298,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
-                        color: selected ? const Color(0xFF0F172A) : Colors.transparent,
+                        color: selected ? const Color(0xFF1A0A10) : Colors.transparent,
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
@@ -331,7 +331,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00A86B),
+                backgroundColor: const Color(0xFFA0003A),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               ),
             ),
@@ -346,7 +346,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0F172A),
+                backgroundColor: const Color(0xFF1A0A10),
                 padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
               ),
             ),
@@ -355,7 +355,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
             // Share PDF Button
             IconButton(
               tooltip: 'PDF शेयर करें',
-              icon: const Icon(Icons.share_rounded, color: Color(0xFF00A86B)),
+              icon: const Icon(Icons.share_rounded, color: Color(0xFFA0003A)),
               onPressed: () => ReceiptPdfService.sharePdf(
                 receipt,
                 pageSize: provider.pageSize,
@@ -381,13 +381,13 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
             margin: const EdgeInsets.only(bottom: 14),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
             decoration: BoxDecoration(
-              color: const Color(0xFFE8F5EE),
+              color: const Color(0xFFFCE4EC),
               borderRadius: BorderRadius.circular(10),
               border: Border.all(color: const Color(0xFFA7F3D0)),
             ),
             child: Row(
               children: [
-                const Icon(Icons.link_rounded, size: 16, color: Color(0xFF047857)),
+                const Icon(Icons.link_rounded, size: 16, color: Color(0xFF700028)),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
@@ -395,7 +395,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF047857),
+                      color: Color(0xFF700028),
                     ),
                   ),
                 ),
@@ -508,13 +508,13 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
             return ChoiceChip(
               label: Text(mode.label),
               selected: selected,
-              selectedColor: const Color(0xFFE8F5EE),
+              selectedColor: const Color(0xFFFCE4EC),
               labelStyle: TextStyle(
                 fontWeight: FontWeight.w700,
-                color: selected ? const Color(0xFF047857) : const Color(0xFF475569),
+                color: selected ? const Color(0xFF700028) : const Color(0xFF475569),
               ),
               side: BorderSide(
-                color: selected ? const Color(0xFF00A86B) : const Color(0xFFCBD5E1),
+                color: selected ? const Color(0xFFA0003A) : const Color(0xFFCBD5E1),
               ),
               onSelected: (_) => provider.updateCurrentReceipt(
                 receipt.copyWith(paymentMode: mode),
@@ -587,7 +587,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                     controller: _searchCtrl,
                     decoration: InputDecoration(
                       hintText: 'रसीद खोजें (Customer Name, Receipt No, Mode, Date)...',
-                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFF00A86B)),
+                      prefixIcon: const Icon(Icons.search_rounded, color: Color(0xFFA0003A)),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear_rounded, size: 18),
@@ -605,7 +605,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8F5EE),
+                    color: const Color(0xFFFCE4EC),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
@@ -613,7 +613,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                     style: const TextStyle(
                       fontSize: 12.5,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF047857),
+                      color: Color(0xFF700028),
                     ),
                   ),
                 ),
@@ -662,7 +662,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                               width: 38,
                               height: 38,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF0F172A),
+                                color: const Color(0xFF1A0A10),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               alignment: Alignment.center,
@@ -688,7 +688,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 14,
-                                            color: Color(0xFF0F172A),
+                                            color: Color(0xFF1A0A10),
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -714,7 +714,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                                       Icon(
                                         r.isSynced ? Icons.cloud_done_rounded : Icons.cloud_queue_rounded,
                                         size: 13,
-                                        color: r.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
+                                        color: r.isSynced ? const Color(0xFF880E4F) : const Color(0xFFD97706),
                                       ),
                                     ],
                                   ),
@@ -735,7 +735,7 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 15,
-                                    color: Color(0xFF00A86B),
+                                    color: Color(0xFFA0003A),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -744,19 +744,19 @@ class _ReceiptVoucherScreenState extends State<ReceiptVoucherScreen> {
                                   children: [
                                     IconButton(
                                       tooltip: 'Print / PDF',
-                                      icon: const Icon(Icons.print_rounded, size: 17, color: Color(0xFF0F172A)),
+                                      icon: const Icon(Icons.print_rounded, size: 17, color: Color(0xFF1A0A10)),
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => _handlePrint(r, provider.pageSize),
                                     ),
                                     IconButton(
                                       tooltip: 'Share PDF',
-                                      icon: const Icon(Icons.share_rounded, size: 17, color: Color(0xFF00A86B)),
+                                      icon: const Icon(Icons.share_rounded, size: 17, color: Color(0xFFA0003A)),
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => ReceiptPdfService.sharePdf(r, pageSize: provider.pageSize),
                                     ),
                                     IconButton(
                                       tooltip: 'Edit',
-                                      icon: const Icon(Icons.edit_outlined, size: 17, color: Color(0xFF4F46E5)),
+                                      icon: const Icon(Icons.edit_outlined, size: 17, color: Color(0xFFC2185B)),
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => provider.loadReceiptForEdit(r),
                                     ),
@@ -839,7 +839,7 @@ class _SubTabButton extends StatelessWidget {
             Icon(
               icon,
               size: 15,
-              color: selected ? const Color(0xFF00A86B) : const Color(0xFF64748B),
+              color: selected ? const Color(0xFFA0003A) : const Color(0xFF64748B),
             ),
             const SizedBox(width: 6),
             Text(
@@ -847,7 +847,7 @@ class _SubTabButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: selected ? const Color(0xFF0F172A) : const Color(0xFF64748B),
+                color: selected ? const Color(0xFF1A0A10) : const Color(0xFF64748B),
               ),
             ),
           ],

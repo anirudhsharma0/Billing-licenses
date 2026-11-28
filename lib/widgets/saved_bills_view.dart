@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/stock_model.dart';
 import '../providers/invoice_provider.dart';
+import '../providers/purchase_provider.dart';
 import '../providers/receipt_provider.dart';
+import '../providers/stock_provider.dart';
 import '../services/invoice_pdf_service.dart';
 import '../utils/number_to_words.dart';
 
@@ -25,7 +28,19 @@ class _SavedBillsViewState extends State<SavedBillsView> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<InvoiceProvider>();
+    final stockProvider = context.watch<StockProvider>();
+    final purchaseProvider = context.watch<PurchaseProvider>();
     final invoices = provider.savedInvoices;
+
+    // Build stock snapshot once for badge rendering
+    final stockSummary = {
+      for (final s in stockProvider.buildStockSummary(
+        purchases: purchaseProvider.savedPurchases,
+        invoices: invoices,
+        includeCatalogDefaults: false,
+      ))
+        s.itemKey: s
+    };
 
     final filtered = invoices.where((inv) {
       if (_searchQuery.trim().isEmpty) return true;
@@ -61,7 +76,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                     decoration: InputDecoration(
                       hintText: 'ग्राहक के नाम से खोजें (Search by Customer Name, Invoice No., or Date)...',
                       hintStyle: const TextStyle(fontSize: 13, color: Color(0xFF94A3B8)),
-                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFF00A86B)),
+                      prefixIcon: const Icon(Icons.search_rounded, size: 20, color: Color(0xFFA0003A)),
                       suffixIcon: _searchQuery.isNotEmpty
                           ? IconButton(
                               icon: const Icon(Icons.clear_rounded, size: 18),
@@ -112,7 +127,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                   icon: const Icon(Icons.person_add_rounded, size: 16, color: Colors.white),
                   label: const Text('+ अगला ग्राहक / नया बिल', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF00A86B),
+                    backgroundColor: const Color(0xFFA0003A),
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                   ),
                 ),
@@ -220,7 +235,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                         color: provider.pendingSyncCount > 0
                             ? const Color(0xFFD97706)
                             : (provider.isFirebaseConfigured
-                                ? const Color(0xFF059669)
+                                ? const Color(0xFF880E4F)
                                 : const Color(0xFF64748B)),
                       ),
                     ),
@@ -293,6 +308,13 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                           ? primaryName.substring(0, 1).toUpperCase()
                           : '#';
 
+                      // Check if any item in this invoice had stock deducted
+                      final hasStockDeducted = stockSummary.isNotEmpty &&
+                          inv.items.any((item) =>
+                              item.description.trim().isNotEmpty &&
+                              stockSummary.containsKey(
+                                StockAdjustment.normalizeKey(item.description)));
+
                       return Container(
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
                         decoration: BoxDecoration(
@@ -319,8 +341,8 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: isCurrent
-                                      ? [const Color(0xFF6366F1), const Color(0xFF4F46E5)]
-                                      : [const Color(0xFF0F172A), const Color(0xFF334155)],
+                                      ? [const Color(0xFF6366F1), const Color(0xFFC2185B)]
+                                      : [const Color(0xFF1A0A10), const Color(0xFF334155)],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -352,7 +374,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w700,
                                             fontSize: 14,
-                                            color: Color(0xFF0F172A),
+                                            color: Color(0xFF1A0A10),
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -378,7 +400,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                           inv.invoiceTitle.toUpperCase().contains('TAX') ? 'TAX INVOICE' : 'PROFORMA',
                                           style: TextStyle(
                                             color: inv.invoiceTitle.toUpperCase().contains('TAX')
-                                                ? const Color(0xFF047857)
+                                                ? const Color(0xFF700028)
                                                 : const Color(0xFF4338CA),
                                             fontSize: 9,
                                             fontWeight: FontWeight.bold,
@@ -396,10 +418,35 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                           child: const Text(
                                             'OPEN IN EDITOR',
                                             style: TextStyle(
-                                              color: Color(0xFF059669),
+                                              color: Color(0xFF880E4F),
                                               fontSize: 9,
                                               fontWeight: FontWeight.w800,
                                             ),
+                                          ),
+                                        ),
+                                      ],
+                                      if (hasStockDeducted) ...[
+                                        const SizedBox(width: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1.5),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFFD97706).withValues(alpha: 0.12),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text('📦', style: TextStyle(fontSize: 8)),
+                                              SizedBox(width: 2),
+                                              Text(
+                                                'Stock Updated',
+                                                style: TextStyle(
+                                                  color: Color(0xFFB45309),
+                                                  fontSize: 9,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
@@ -418,13 +465,13 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                             Icon(
                                               inv.isSynced ? Icons.cloud_done_rounded : Icons.cloud_queue_rounded,
                                               size: 10,
-                                              color: inv.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
+                                              color: inv.isSynced ? const Color(0xFF880E4F) : const Color(0xFFD97706),
                                             ),
                                             const SizedBox(width: 3),
                                             Text(
                                               inv.isSynced ? 'Synced' : 'Offline',
                                               style: TextStyle(
-                                                color: inv.isSynced ? const Color(0xFF059669) : const Color(0xFFD97706),
+                                                color: inv.isSynced ? const Color(0xFF880E4F) : const Color(0xFFD97706),
                                                 fontSize: 9,
                                                 fontWeight: FontWeight.w700,
                                               ),
@@ -490,7 +537,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w800,
                                     fontSize: 15,
-                                    color: Color(0xFF0F172A),
+                                    color: Color(0xFF1A0A10),
                                   ),
                                 ),
                                 const SizedBox(height: 5),
@@ -507,7 +554,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                       icon: const Icon(Icons.visibility_rounded, size: 13, color: Colors.white),
                                       label: const Text('बिल देखें', style: TextStyle(fontSize: 11, color: Colors.white, fontWeight: FontWeight.bold)),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFF00A86B),
+                                        backgroundColor: const Color(0xFFA0003A),
                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                         minimumSize: const Size(0, 28),
                                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -530,13 +577,13 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                             );
                                         provider.setViewMode('receipts');
                                       },
-                                      icon: const Icon(Icons.receipt_rounded, size: 13, color: Color(0xFF4F46E5)),
+                                      icon: const Icon(Icons.receipt_rounded, size: 13, color: Color(0xFFC2185B)),
                                       label: const Text(
                                         'Add Receipt',
                                         style: TextStyle(
                                           fontSize: 11,
                                           fontWeight: FontWeight.w700,
-                                          color: Color(0xFF4F46E5),
+                                          color: Color(0xFFC2185B),
                                         ),
                                       ),
                                       style: OutlinedButton.styleFrom(
@@ -554,7 +601,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                     IconButton(
                                       constraints: const BoxConstraints.tightFor(width: 28, height: 28),
                                       padding: EdgeInsets.zero,
-                                      icon: const Icon(Icons.share_rounded, size: 16, color: Color(0xFF00A86B)),
+                                      icon: const Icon(Icons.share_rounded, size: 16, color: Color(0xFFA0003A)),
                                       tooltip: 'WhatsApp पर PDF शेयर करें',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () => InvoicePdfService.sharePdf(inv),
@@ -582,7 +629,7 @@ class _SavedBillsViewState extends State<SavedBillsView> {
                                     IconButton(
                                       constraints: const BoxConstraints.tightFor(width: 28, height: 28),
                                       padding: EdgeInsets.zero,
-                                      icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF059669)),
+                                      icon: const Icon(Icons.print_rounded, size: 16, color: Color(0xFF880E4F)),
                                       tooltip: 'प्रिंट / PDF डाउनलोड',
                                       visualDensity: VisualDensity.compact,
                                       onPressed: () async {

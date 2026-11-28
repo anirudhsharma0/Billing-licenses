@@ -42,7 +42,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                  colors: [Color(0xFF1A0A10), Color(0xFF1E293B)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -202,7 +202,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
                                   gradient: LinearGradient(
                                     colors: isCurrent
                                         ? [const Color(0xFF6366F1), const Color(0xFF8B5CF6)]
-                                        : [const Color(0xFF0F172A), const Color(0xFF334155)],
+                                        : [const Color(0xFF1A0A10), const Color(0xFF334155)],
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                   ),
@@ -233,7 +233,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
                                             style: const TextStyle(
                                               fontWeight: FontWeight.w800,
                                               fontSize: 14.5,
-                                              color: Color(0xFF0F172A),
+                                              color: Color(0xFF1A0A10),
                                             ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
@@ -250,7 +250,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
                                             child: const Text(
                                               'ACTIVE',
                                               style: TextStyle(
-                                                color: Color(0xFF059669),
+                                                color: Color(0xFF880E4F),
                                                 fontSize: 9,
                                                 fontWeight: FontWeight.w800,
                                               ),
@@ -290,7 +290,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.w900,
                                       fontSize: 15,
-                                      color: Color(0xFF0F172A),
+                                      color: Color(0xFF1A0A10),
                                     ),
                                   ),
                                   const SizedBox(height: 8),
@@ -341,7 +341,7 @@ class _InvoiceHistoryDialogState extends State<InvoiceHistoryDialog> {
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(
                                               content: Text('Invoice cloned as new draft.'),
-                                              backgroundColor: Color(0xFF0F172A),
+                                              backgroundColor: Color(0xFF1A0A10),
                                               behavior: SnackBarBehavior.floating,
                                             ),
                                           );

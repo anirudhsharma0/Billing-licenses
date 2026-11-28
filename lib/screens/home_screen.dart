@@ -8,6 +8,7 @@ import '../models/invoice_model.dart';
 import '../providers/invoice_provider.dart';
 import '../providers/purchase_provider.dart';
 import '../providers/receipt_provider.dart';
+import '../providers/stock_provider.dart';
 import '../services/invoice_pdf_service.dart';
 import '../providers/license_provider.dart';
 import '../services/update_service.dart';
@@ -23,6 +24,7 @@ import '../widgets/update_dialog.dart';
 import 'mobile_bills_screen.dart';
 import 'purchase_list_screen.dart';
 import 'receipt_voucher_screen.dart';
+import 'stock_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (license.isLoading && license.lastChecked == null) {
       return const Scaffold(
-        backgroundColor: Color(0xFF0F172A),
+        backgroundColor: Color(0xFF1A0A10),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 32,
                 child: CircularProgressIndicator(
                   strokeWidth: 3,
-                  color: Color(0xFF00A86B),
+                  color: Color(0xFFA0003A),
                 ),
               ),
               SizedBox(height: 16),
@@ -143,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Focus(
         autofocus: true,
         child: Scaffold(
-          backgroundColor: const Color(0xFFF4F6F8),
+          backgroundColor: const Color(0xFFF8FAFC),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -191,7 +193,8 @@ class _HomeScreenState extends State<HomeScreen> {
     final bool isDropdownViewActive = provider.viewMode == 'split' ||
         provider.viewMode == 'preview' ||
         provider.viewMode == 'receipts' ||
-        provider.viewMode == 'purchases';
+        provider.viewMode == 'purchases' ||
+        provider.viewMode == 'stock';
 
     String dropdownLabel = 'मेनू / Views';
     IconData dropdownIcon = Icons.grid_view_rounded;
@@ -207,6 +210,9 @@ class _HomeScreenState extends State<HomeScreen> {
     } else if (provider.viewMode == 'purchases') {
       dropdownLabel = 'खरीद बिल (Purchases)';
       dropdownIcon = Icons.shopping_bag_rounded;
+    } else if (provider.viewMode == 'stock') {
+      dropdownLabel = 'स्टॉक (Stock)';
+      dropdownIcon = Icons.inventory_2_rounded;
     }
 
     return Container(
@@ -276,6 +282,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             case 'preview':
                             case 'receipts':
                             case 'purchases':
+                            case 'stock':
                               provider.setViewMode(value);
                               break;
                             case 'add_customer':
@@ -314,20 +321,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             isSelected: provider.viewMode == 'purchases',
                             badgeCount: purchasesCount > 0 ? purchasesCount : null,
                           ),
+                          _buildDropdownItem(
+                            value: 'stock',
+                            icon: Icons.inventory_2_rounded,
+                            label: 'स्टॉक (Stock)',
+                            isSelected: provider.viewMode == 'stock',
+                          ),
                           const PopupMenuDivider(height: 8),
                           const PopupMenuItem<String>(
                             value: 'add_customer',
                             height: 40,
                             child: Row(
                               children: [
-                                Icon(Icons.person_add_rounded, size: 17, color: Color(0xFF00A86B)),
+                                Icon(Icons.person_add_rounded, size: 17, color: Color(0xFFA0003A)),
                                 SizedBox(width: 10),
                                 Text(
                                   '+ नया ग्राहक (Add Customer)',
                                   style: TextStyle(
                                     fontSize: 12.5,
                                     fontWeight: FontWeight.w700,
-                                    color: Color(0xFF00A86B),
+                                    color: Color(0xFFA0003A),
                                   ),
                                 ),
                               ],
@@ -356,12 +369,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
                           decoration: BoxDecoration(
                             color: isDropdownViewActive
-                                ? Colors.green.shade50
+                                ? const Color(0xFFFCE4EC)
                                 : const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: isDropdownViewActive
-                                  ? const Color(0xFF00A86B)
+                                  ? const Color(0xFFA0003A)
                                   : const Color(0xFFE2E8F0),
                               width: isDropdownViewActive ? 1.2 : 1.0,
                             ),
@@ -373,7 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 dropdownIcon,
                                 size: 15,
                                 color: isDropdownViewActive
-                                    ? Colors.green.shade800
+                                    ? const Color(0xFF700028)
                                     : const Color(0xFF475569),
                               ),
                               const SizedBox(width: 6),
@@ -385,7 +398,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ? FontWeight.w800
                                       : FontWeight.w600,
                                   color: isDropdownViewActive
-                                      ? Colors.green.shade800
+                                      ? const Color(0xFF700028)
                                       : const Color(0xFF334155),
                                 ),
                               ),
@@ -394,7 +407,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Icons.keyboard_arrow_down_rounded,
                                 size: 17,
                                 color: isDropdownViewActive
-                                    ? Colors.green.shade800
+                                    ? const Color(0xFF700028)
                                     : const Color(0xFF64748B),
                               ),
                             ],
@@ -426,7 +439,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: provider.pendingSyncCount > 0
                               ? const Color(0xFFFEF3C7)
                               : (provider.isFirebaseConfigured
-                                  ? Colors.green.shade50
+                                  ? const Color(0xFFFCE4EC)
                                   : const Color(0xFFF1F5F9)),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
@@ -446,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 height: 12,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 1.8,
-                                  color: Color(0xFF00A86B),
+                                  color: Color(0xFFA0003A),
                                 ),
                               )
                             else
@@ -460,7 +473,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: provider.pendingSyncCount > 0
                                     ? const Color(0xFFD97706)
                                     : (provider.isFirebaseConfigured
-                                        ? const Color(0xFF059669)
+                                        ? const Color(0xFF880E4F)
                                         : const Color(0xFF64748B)),
                               ),
                             if (!isVeryCompact) ...[
@@ -477,7 +490,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: provider.pendingSyncCount > 0
                                       ? const Color(0xFFB45309)
                                       : (provider.isFirebaseConfigured
-                                          ? const Color(0xFF059669)
+                                          ? const Color(0xFF880E4F)
                                           : const Color(0xFF64748B)),
                                 ),
                               ),
@@ -501,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00A86B),
+                        backgroundColor: const Color(0xFFA0003A),
                         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                         minimumSize: const Size(0, 34),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -522,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF0F172A),
+                        backgroundColor: const Color(0xFF1A0A10),
                         padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                         minimumSize: const Size(0, 34),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -551,7 +564,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.green.shade50 : Colors.transparent,
+          color: isSelected ? const Color(0xFFFCE4EC) : Colors.transparent,
           borderRadius: BorderRadius.circular(7),
         ),
         child: Row(
@@ -559,7 +572,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(
               icon,
               size: 17,
-              color: isSelected ? Colors.green.shade800 : const Color(0xFF475569),
+              color: isSelected ? const Color(0xFF700028) : const Color(0xFF475569),
             ),
             const SizedBox(width: 10),
             Expanded(
@@ -568,7 +581,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(
                   fontSize: 12.5,
                   fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                  color: isSelected ? Colors.green.shade800 : const Color(0xFF0F172A),
+                  color: isSelected ? const Color(0xFF700028) : const Color(0xFF1A0A10),
                 ),
               ),
             ),
@@ -577,7 +590,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF00A86B) : const Color(0xFFE8F5EE),
+                  color: isSelected ? const Color(0xFFA0003A) : const Color(0xFFFCE4EC),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -585,7 +598,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w800,
-                    color: isSelected ? Colors.white : const Color(0xFF00A86B),
+                    color: isSelected ? Colors.white : const Color(0xFFA0003A),
                   ),
                 ),
               ),
@@ -609,10 +622,10 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.green.shade50 : Colors.transparent,
+          color: isSelected ? const Color(0xFFFCE4EC) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isSelected ? const Color(0xFF00A86B) : Colors.transparent,
+            color: isSelected ? const Color(0xFFA0003A) : Colors.transparent,
             width: 1.1,
           ),
         ),
@@ -622,7 +635,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Icon(
               icon,
               size: 15,
-              color: isSelected ? Colors.green.shade800 : const Color(0xFF64748B),
+              color: isSelected ? const Color(0xFF700028) : const Color(0xFF64748B),
             ),
             const SizedBox(width: 6),
             Text(
@@ -630,7 +643,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                color: isSelected ? Colors.green.shade800 : const Color(0xFF475569),
+                color: isSelected ? const Color(0xFF700028) : const Color(0xFF475569),
               ),
             ),
             if (badgeCount != null) ...[
@@ -638,7 +651,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1.5),
                 decoration: BoxDecoration(
-                  color: isSelected ? const Color(0xFF00A86B) : const Color(0xFFE2E8F0),
+                  color: isSelected ? const Color(0xFFA0003A) : const Color(0xFFE2E8F0),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -666,6 +679,17 @@ class _HomeScreenState extends State<HomeScreen> {
     Invoice invoice,
     double displayBalance,
   ) {
+    final stockProvider = context.watch<StockProvider>();
+    final purchaseProvider = context.watch<PurchaseProvider>();
+    final allStockItems = stockProvider.buildStockSummary(
+      purchases: purchaseProvider.savedPurchases,
+      invoices: provider.savedInvoices,
+      includeCatalogDefaults: false,
+    );
+    final lowCount = allStockItems.where((e) => e.isLowStock).length;
+    final outCount = allStockItems.where((e) => e.isOutOfStock).length;
+    final hasStockAlert = lowCount > 0 || outCount > 0;
+
     return Row(
       children: [
         // CARD 1: Total Sales
@@ -675,7 +699,7 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE5EAE8)),
+              border: Border.all(color: const Color(0xFFF5D0DC)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -686,10 +710,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 30,
                       height: 30,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F5EE),
+                        color: const Color(0xFFFCE4EC),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.account_balance_wallet_outlined, size: 16, color: Color(0xFF00A86B)),
+                      child: const Icon(Icons.account_balance_wallet_outlined, size: 16, color: Color(0xFFA0003A)),
                     ),
                     const SizedBox(width: 8),
                     const Text('Total Invoiced Sales', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF475569))),
@@ -698,10 +722,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10),
                 Text(
                   '₹ ${NumberToWords.formatCurrency(displayBalance)}',
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
                 ),
                 const SizedBox(height: 4),
-                const Text('All saved customer bills', style: TextStyle(fontSize: 10.5, color: Color(0xFF00A86B), fontWeight: FontWeight.w600)),
+                const Text('All saved customer bills', style: TextStyle(fontSize: 10.5, color: Color(0xFFA0003A), fontWeight: FontWeight.w600)),
               ],
             ),
           ),
@@ -715,7 +739,7 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE5EAE8)),
+              border: Border.all(color: const Color(0xFFF5D0DC)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -729,7 +753,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: const Color(0xFFEEF2FF),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: const Icon(Icons.receipt_outlined, size: 16, color: Color(0xFF4F46E5)),
+                      child: const Icon(Icons.receipt_outlined, size: 16, color: Color(0xFFC2185B)),
                     ),
                     const SizedBox(width: 8),
                     const Text('Total GST Output', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF475569))),
@@ -738,12 +762,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10),
                 Text(
                   '₹ ${NumberToWords.formatCurrency(invoice.totalTaxAmount)}',
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   invoice.taxMode == TaxMode.cgstSgst ? 'CGST + SGST (Intra-State)' : 'IGST (Inter-State)',
-                  style: const TextStyle(fontSize: 10.5, color: Color(0xFF4F46E5), fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 10.5, color: Color(0xFFC2185B), fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -758,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE5EAE8)),
+              border: Border.all(color: const Color(0xFFF5D0DC)),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -781,14 +805,98 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 10),
                 Text(
                   '${provider.savedInvoices.length} Bills',
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF0F172A)),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   provider.isFirebaseConfigured ? '● Cloud Synced' : '● Local Storage',
-                  style: const TextStyle(fontSize: 10.5, color: Color(0xFF00A86B), fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 10.5, color: Color(0xFFA0003A), fontWeight: FontWeight.w600),
                 ),
               ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+
+        // CARD 4: Stock Alert
+        Expanded(
+          child: GestureDetector(
+            onTap: () => provider.setViewMode('stock'),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: hasStockAlert ? const Color(0xFFFFFBEB) : Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: hasStockAlert ? const Color(0xFFFDE68A) : const Color(0xFFF5D0DC),
+                  width: hasStockAlert ? 1.4 : 1.0,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 30,
+                        height: 30,
+                        decoration: BoxDecoration(
+                          color: hasStockAlert ? const Color(0xFFFEF3C7) : const Color(0xFFFCE4EC),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          hasStockAlert ? Icons.warning_amber_rounded : Icons.inventory_2_outlined,
+                          size: 16,
+                          color: hasStockAlert ? const Color(0xFFD97706) : const Color(0xFFA0003A),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      const Text('स्टॉक अलर्ट', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Color(0xFF475569))),
+                      const Spacer(),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 11, color: Color(0xFF94A3B8)),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  if (!hasStockAlert && allStockItems.isEmpty)
+                    const Text(
+                      'कोई स्टॉक नहीं',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF64748B)),
+                    )
+                  else if (!hasStockAlert)
+                    const Text(
+                      '✓ सब ठीक है',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF880E4F)),
+                    )
+                  else
+                    RichText(
+                      text: TextSpan(
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w900, color: Color(0xFF1A0A10)),
+                        children: [
+                          if (outCount > 0)
+                            TextSpan(
+                              text: '$outCount खत्म',
+                              style: const TextStyle(color: Color(0xFFDC2626)),
+                            ),
+                          if (outCount > 0 && lowCount > 0) const TextSpan(text: '  '),
+                          if (lowCount > 0)
+                            TextSpan(
+                              text: '$lowCount कम',
+                              style: const TextStyle(color: Color(0xFFD97706)),
+                            ),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 4),
+                  Text(
+                    hasStockAlert ? 'Stock देखें →' : '${allStockItems.length} items tracked',
+                    style: TextStyle(
+                      fontSize: 10.5,
+                      color: hasStockAlert ? const Color(0xFFD97706) : const Color(0xFFA0003A),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -808,7 +916,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE5EAE8)),
+            border: Border.all(color: const Color(0xFFF5D0DC)),
           ),
           clipBehavior: Clip.antiAlias,
           child: const SavedBillsView(),
@@ -820,12 +928,15 @@ class _HomeScreenState extends State<HomeScreen> {
       case 'purchases':
         return const PurchaseListScreen();
 
+      case 'stock':
+        return const StockScreen();
+
       case 'form':
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: const Color(0xFFE5EAE8)),
+            border: Border.all(color: const Color(0xFFF5D0DC)),
           ),
           clipBehavior: Clip.antiAlias,
           child: const InvoiceFormPanel(),
@@ -862,7 +973,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(18),
-                  border: Border.all(color: const Color(0xFFE5EAE8)),
+                  border: Border.all(color: const Color(0xFFF5D0DC)),
                 ),
                 clipBehavior: Clip.antiAlias,
                 child: const InvoiceFormPanel(),

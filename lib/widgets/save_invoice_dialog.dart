@@ -91,7 +91,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
               ),
             ],
           ),
-          backgroundColor: result.isCloudSaved ? const Color(0xFF059669) : const Color(0xFFD97706),
+          backgroundColor: result.isCloudSaved ? const Color(0xFF880E4F) : const Color(0xFFD97706),
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           duration: const Duration(seconds: 4),
@@ -124,7 +124,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                  colors: [Color(0xFF1A0A10), Color(0xFF1E293B)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -198,7 +198,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
-                                  color: Color(0xFF0F172A),
+                                  color: Color(0xFF1A0A10),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -226,7 +226,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
                               style: const TextStyle(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 15,
-                                color: Color(0xFF4F46E5),
+                                color: Color(0xFFC2185B),
                               ),
                             ),
                           ],
@@ -329,7 +329,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
                               : Icons.info_outline_rounded,
                           size: 16,
                           color: provider.isFirebaseConfigured
-                              ? const Color(0xFF059669)
+                              ? const Color(0xFF880E4F)
                               : const Color(0xFFD97706),
                         ),
                         const SizedBox(width: 6),
@@ -385,7 +385,7 @@ class _SaveInvoiceDialogState extends State<SaveInvoiceDialog> {
                           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF00A86B),
+                          backgroundColor: const Color(0xFFA0003A),
                           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),

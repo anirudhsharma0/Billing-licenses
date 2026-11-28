@@ -8,6 +8,7 @@ import '../utils/number_to_words.dart';
 import '../widgets/invoice_preview_sheet.dart';
 import 'purchase_list_screen.dart';
 import 'receipt_voucher_screen.dart';
+import 'stock_screen.dart';
 
 class MobileBillsScreen extends StatefulWidget {
   const MobileBillsScreen({super.key});
@@ -88,7 +89,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => Scaffold(
-          backgroundColor: const Color(0xFFF4F6F8),
+          backgroundColor: const Color(0xFFF8FAFC),
           appBar: AppBar(
             title: const Text(
               'खरीद बिल (Purchases)',
@@ -104,11 +105,31 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
     );
   }
 
+  void _openStockPage(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (ctx) => Scaffold(
+          backgroundColor: const Color(0xFFF8FAFC),
+          appBar: AppBar(
+            title: const Text(
+              'स्टॉक (Stock)',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+            ),
+          ),
+          body: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: StockScreen(),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _openReceiptsPage(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (ctx) => Scaffold(
-          backgroundColor: const Color(0xFFF4F6F8),
+          backgroundColor: const Color(0xFFF8FAFC),
           appBar: AppBar(
             title: const Text(
               'Receipt Vouchers (रसीद)',
@@ -174,7 +195,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () => provider.refreshInvoices(),
-          color: const Color(0xFF00A86B),
+          color: const Color(0xFFA0003A),
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
             slivers: [
@@ -189,11 +210,11 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                         width: 36,
                         height: 36,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF00A86B),
+                          color: const Color(0xFFA0003A),
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF00A86B).withValues(alpha: 0.25),
+                              color: const Color(0xFFA0003A).withValues(alpha: 0.25),
                               blurRadius: 6,
                               offset: const Offset(0, 2),
                             ),
@@ -217,7 +238,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                                 fontSize: 14,
                                 fontWeight: FontWeight.w800,
                                 letterSpacing: -0.3,
-                                color: Color(0xFF0F172A),
+                                color: Color(0xFF1A0A10),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -239,15 +260,23 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
 
                       // Purchase Bills quick button
                       IconButton(
-                        icon: const Icon(Icons.shopping_bag_rounded, size: 20, color: Color(0xFF00A86B)),
+                        icon: const Icon(Icons.shopping_bag_rounded, size: 20, color: Color(0xFFA0003A)),
                         tooltip: 'Purchase Bills',
                         visualDensity: VisualDensity.compact,
                         onPressed: () => _openPurchasesPage(context),
                       ),
 
+                      // Stock quick button
+                      IconButton(
+                        icon: const Icon(Icons.inventory_2_rounded, size: 20, color: Color(0xFFD97706)),
+                        tooltip: 'Stock',
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () => _openStockPage(context),
+                      ),
+
                       // Receipts Voucher quick button
                       IconButton(
-                        icon: const Icon(Icons.receipt_rounded, size: 20, color: Color(0xFF4F46E5)),
+                        icon: const Icon(Icons.receipt_rounded, size: 20, color: Color(0xFFC2185B)),
                         tooltip: 'Receipt Vouchers',
                         visualDensity: VisualDensity.compact,
                         onPressed: () => _openReceiptsPage(context),
@@ -259,7 +288,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                             ? const SizedBox(
                                 width: 16,
                                 height: 16,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFF00A86B)),
+                                child: CircularProgressIndicator(strokeWidth: 2, color: Color(0xFFA0003A)),
                               )
                             : Icon(
                                 provider.pendingSyncCount > 0
@@ -268,7 +297,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                                 size: 20,
                                 color: provider.pendingSyncCount > 0
                                     ? const Color(0xFFD97706)
-                                    : const Color(0xFF00A86B),
+                                    : const Color(0xFFA0003A),
                               ),
                         tooltip: provider.pendingSyncCount > 0
                             ? '${provider.pendingSyncCount} bills pending sync'
@@ -307,10 +336,10 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                           width: 28,
                           height: 28,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE8F5EE),
+                            color: const Color(0xFFFCE4EC),
                             borderRadius: BorderRadius.circular(7),
                           ),
-                          child: const Icon(Icons.today_rounded, size: 16, color: Color(0xFF00A86B)),
+                          child: const Icon(Icons.today_rounded, size: 16, color: Color(0xFFA0003A)),
                         ),
                         const SizedBox(width: 9),
                         const Expanded(
@@ -326,7 +355,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3.5),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF00A86B),
+                            color: const Color(0xFFA0003A),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
@@ -354,19 +383,19 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _searchQuery.isNotEmpty ? const Color(0xFF00A86B) : const Color(0xFFCBD5E1),
+                        color: _searchQuery.isNotEmpty ? const Color(0xFFA0003A) : const Color(0xFFCBD5E1),
                         width: 1.1,
                       ),
                     ),
                     child: TextField(
                       controller: _searchController,
-                      style: const TextStyle(fontSize: 13.5, color: Color(0xFF0F172A)),
+                      style: const TextStyle(fontSize: 13.5, color: Color(0xFF1A0A10)),
                       decoration: InputDecoration(
                         hintText: 'ग्राहक का नाम खोजें (Search Customer Name)...',
                         hintStyle: const TextStyle(fontSize: 12.5, color: Color(0xFF94A3B8)),
                         prefixIcon: const Icon(
                           Icons.search_rounded,
-                          color: Color(0xFF00A86B),
+                          color: Color(0xFFA0003A),
                           size: 19,
                         ),
                         suffixIcon: _searchQuery.isNotEmpty
@@ -416,7 +445,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                         style: const TextStyle(
                           fontSize: 11.5,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF00A86B),
+                          color: Color(0xFFA0003A),
                         ),
                       ),
                     ],
@@ -491,15 +520,15 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
               width: 32,
               height: 32,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F5EE),
+                color: const Color(0xFFFCE4EC),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: const Color(0xFF00A86B).withValues(alpha: 0.25)),
+                border: Border.all(color: const Color(0xFFA0003A).withValues(alpha: 0.25)),
               ),
               child: Center(
                 child: Text(
                   customerName.isNotEmpty ? customerName[0].toUpperCase() : 'C',
                   style: const TextStyle(
-                    color: Color(0xFF00A86B),
+                    color: Color(0xFFA0003A),
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
                   ),
@@ -522,7 +551,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                           style: const TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w800,
-                            color: Color(0xFF0F172A),
+                            color: Color(0xFF1A0A10),
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -583,7 +612,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w900,
-                    color: Color(0xFF0F172A),
+                    color: Color(0xFF1A0A10),
                   ),
                 ),
                 const SizedBox(height: 1),
@@ -592,7 +621,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                   style: const TextStyle(
                     fontSize: 9,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF00A86B),
+                    color: Color(0xFFA0003A),
                   ),
                 ),
               ],
@@ -654,7 +683,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                         child: Icon(
                           Icons.receipt_rounded,
                           size: 13,
-                          color: Color(0xFF4F46E5),
+                          color: Color(0xFFC2185B),
                         ),
                       ),
                     ),
@@ -679,7 +708,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                     border: Border.all(color: const Color(0xFFC7D2FE)),
                   ),
                   child: const Center(
-                    child: Icon(Icons.visibility_rounded, size: 15, color: Color(0xFF4F46E5)),
+                    child: Icon(Icons.visibility_rounded, size: 15, color: Color(0xFFC2185B)),
                   ),
                 ),
               ),
@@ -712,7 +741,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                 style: const TextStyle(
                   fontSize: 13.5,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
+                  color: Color(0xFF1A0A10),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -727,7 +756,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
                 icon: const Icon(Icons.clear_rounded, size: 15),
                 label: const Text('सर्च साफ़ करें', style: TextStyle(fontSize: 12)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF00A86B),
+                  backgroundColor: const Color(0xFFA0003A),
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 ),
@@ -750,14 +779,14 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.folder_open_rounded, size: 40, color: Color(0xFF00A86B)),
+            const Icon(Icons.folder_open_rounded, size: 40, color: Color(0xFFA0003A)),
             const SizedBox(height: 10),
             const Text(
               'कोई सेव किया हुआ बिल मौजूद नहीं है',
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
+                color: Color(0xFF1A0A10),
               ),
             ),
             const SizedBox(height: 12),
@@ -766,7 +795,7 @@ class _MobileBillsScreenState extends State<MobileBillsScreen> {
               icon: const Icon(Icons.sync_rounded, size: 15),
               label: const Text('Cloud Sync', style: TextStyle(fontSize: 12)),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF00A86B),
+                backgroundColor: const Color(0xFFA0003A),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
               ),
@@ -857,7 +886,7 @@ class _MobileBillViewerPageState extends State<MobileBillViewerPage> {
         backgroundColor: Colors.white,
         elevation: 0.5,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF0F172A), size: 18),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF1A0A10), size: 18),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Column(
@@ -868,14 +897,14 @@ class _MobileBillViewerPageState extends State<MobileBillViewerPage> {
               style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
+                color: Color(0xFF1A0A10),
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(
               'Inv #${inv.metadata.invoiceNo} • ₹ ${NumberToWords.formatCurrency(inv.grandTotal)}',
-              style: const TextStyle(fontSize: 11, color: Color(0xFF00A86B), fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 11, color: Color(0xFFA0003A), fontWeight: FontWeight.w600),
             ),
           ],
         ),
